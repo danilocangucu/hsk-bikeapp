@@ -1,22 +1,22 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
-
-	_ "github.com/mattn/go-sqlite3"
+	"hsk-bikeapp-solita/handlers"
 )
 
-func OpenDatabase() *sql.DB {
-	db, err := sql.Open("sqlite3", "./database/hsk-city-bike.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("database opened")
-	return db
-}
-
 func main() {
-	OpenDatabase()
+	fmt.Println("running main")
+	collection := []handlers.Handler{
+		{
+			Endpoint: "/",
+			GetFunction: handlers.IndexGet,
+		},
+		{
+			Endpoint: "/stations",
+			GetFunction: handlers.StationsGet,
+		},
+	}
+
+	handlers.Start(collection)
 }
