@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 const responseError = "Response error"
@@ -32,9 +33,14 @@ type ResponseError struct {
 }
 
 var DB database.Db
+var err error
 
 func Start(collection []Handler) {
-	DB = database.OpenDatabase()
+	DB, err = database.OpenDatabase()
+	if err != nil{
+		fmt.Fprintf(os.Stderr, "Error opening database: %v\n", err)
+		os.Exit(1)
+	}
 	defer DB.Close()
 
 	mux := http.NewServeMux()
@@ -66,16 +72,17 @@ func GetErrorResponse(w http.ResponseWriter, errorMessage string, statusCode int
 	response := ResponseError{Status: responseError, Error: errorMessage}
 	result, err := json.Marshal(response)
 	if err != nil {
-		//todo handle error
-		fmt.Println("geterrresponse error")
+		log.Println("Error marshaling JSON response:", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 	io.WriteString(w, string(result))
 }
 
 func IndexGet(w http.ResponseWriter, r *http.Request) {
-	templ := template.Must(template.New("index.html").ParseFiles("index.html"))
-	err := templ.ExecuteTemplate(w, "index.html", "") //todo handle error
-	if err != nil {
-		fmt.Println(err)
-	}
+    templ := template.Must(template.New("index.html").ParseFiles("index.html"))
+    err := templ.ExecuteTemplate(w, "index.html", "")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
 }

@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -24,25 +23,24 @@ type Station struct {
 	Stad string
 	Operaattor string
 	Kapasiteet string
-	x string
-	y string
-	JourneysFrom string
-	JourneysTo string
+	Longitude string
+	Latitude string
+	JourneysFrom sql.NullString
+	JourneysTo sql.NullString
 }
 
 type StationFilter struct {
 	StationId int
 }
 
-func OpenDatabase() Db {
+func OpenDatabase() (Db, error) {
 	db, err := sql.Open("sqlite3", "./database/hsk-city-bike-app.db")
 	if err != nil{
-		fmt.Fprintln(os.Stderr, err)
-		//todo error?
+		return Db{}, err
 	}
 	fmt.Println("db opened")
 
-	return Db{connection: db}
+	return Db{connection: db}, nil
 }
 
 func (db *Db) Close() {
@@ -54,26 +52,25 @@ func (db *Db) GetStations(filter StationFilter) (stations []Station, err error) 
 	var query string
 
 	if filter != (StationFilter{}){
-		query = fmt.Sprintf("SELECT FID, ID, Nimi, Namn, Name, Osoite, Adress, Kaupunki, Stad, Operaattor, Kapasiteet, JourneysFrom, JourneysTo FROM stations WHERE ID = %v", filter.StationId)
+		query = fmt.Sprintf("SELECT FID, ID, Nimi, Namn, Name, Osoite, Adress, Kaupunki, Stad, Operaattor, Kapasiteet, x, y, JourneysFrom, JourneysTo FROM stations WHERE ID = %v", filter.StationId)
 
 	} else {
-		query = "select FID,ID,Nimi,Namn,Name,Osoite,Adress,Kaupunki,Stad,Operaattor,Kapasiteet,JourneysFrom,JourneysTo from stations"
+		query = "select FID,ID,Nimi,Namn,Name,Osoite,Adress,Kaupunki,Stad,Operaattor,Kapasiteet,x,y,JourneysFrom,JourneysTo from stations"
 	}
 
 	rows, err := db.connection.Query(query)
 	if err != nil {
-		fmt.Println(1)
 		return stations, err
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&station.FID, &station.ID, &station.Nimi, &station.Namn, &station.Name, &station.Osoite, &station.Adress, &station.Kaupunki, &station.Stad, &station.Operaattor, &station.Kapasiteet, &station.JourneysFrom, &station.JourneysTo)
+		err := rows.Scan(&station.FID, &station.ID, &station.Nimi, &station.Namn, &station.Name, &station.Osoite, &station.Adress, &station.Kaupunki, &station.Stad, &station.Operaattor, &station.Kapasiteet, &station.Longitude, &station.Latitude, &station.JourneysFrom, &station.JourneysTo)
 		if err != nil {
-			fmt.Println(2)
 			return stations, err
 		}
 		stations = append(stations, station)
 	}
+
 	defer rows.Close()
 	return stations, err
 }

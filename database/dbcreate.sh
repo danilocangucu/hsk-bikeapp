@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Change the file paths and names to match your own
+# Define the file paths and names
 DATASET_1="2021-05.csv"
 DATASET_2="2021-06.csv"
 DATASET_3="2021-07.csv"
@@ -31,6 +31,7 @@ wget -q https://dev.hsl.fi/citybikes/od-trips-2021/$DATASET_3
 echo "Downloading $DATASET_4 ..."
 wget -q https://opendata.arcgis.com/datasets/$DATASET_4
 
+# Create the database and import data
 echo "Creating database ..."
 sqlite3 $DB_NAME << EOF
 PRAGMA journal_mode = MEMORY;
@@ -40,17 +41,77 @@ DROP TABLE IF EXISTS journeys;
 DROP TABLE IF EXISTS stations;
 DROP TABLE IF EXISTS raw_stations;
 
-CREATE TABLE raw_journeys ("Departure","Return","Departure_station_id" INTEGER,"Departure_station_name","Return_station_id" INTEGER,"Return_station_name","Covered_distance_m" INTEGER,"Duration_sec" INTEGER);
+CREATE TABLE raw_journeys (
+  "Departure",
+  "Return",
+  "Departure_station_id" INTEGER,
+  "Departure_station_name",
+  "Return_station_id" INTEGER,
+  "Return_station_name",
+  "Covered_distance_m" INTEGER,
+  "Duration_sec" INTEGER
+);
+
 .import $DATASET_1 raw_journeys
-CREATE TABLE journeys AS SELECT DISTINCT "Departure","Return","Departure_station_id","Departure_station_name","Return_station_id","Return_station_name","Covered_distance_m","Duration_sec" FROM raw_journeys WHERE "Duration_sec" >= 10 AND "Covered_distance_m" >= 10 ORDER BY "Departure" ASC;
+CREATE TABLE journeys AS SELECT DISTINCT
+  "Departure",
+  "Return",
+  "Departure_station_id",
+  "Departure_station_name",
+  "Return_station_id",
+  "Return_station_name",
+  "Covered_distance_m",
+  "Duration_sec"
+FROM raw_journeys
+WHERE "Duration_sec" >= 10 AND "Covered_distance_m" >= 10
+ORDER BY "Departure" ASC;
+
 DROP TABLE raw_journeys;
 .import $DATASET_2 raw_journeys
-INSERT INTO journeys SELECT DISTINCT "Departure","Return","Departure_station_id","Departure_station_name","Return_station_id","Return_station_name","Covered_distance_m","Duration_sec" FROM raw_journeys WHERE "Duration_sec" >= 10 AND "Covered_distance_m" >= 10 ORDER BY "Departure" ASC;
+INSERT INTO journeys SELECT DISTINCT
+  "Departure",
+  "Return",
+  "Departure_station_id",
+  "Departure_station_name",
+  "Return_station_id",
+  "Return_station_name",
+  "Covered_distance_m",
+  "Duration_sec"
+FROM raw_journeys
+WHERE "Duration_sec" >= 10 AND "Covered_distance_m" >= 10
+ORDER BY "Departure" ASC;
+
 DROP TABLE raw_journeys;
 .import $DATASET_3 raw_journeys
-INSERT INTO journeys SELECT DISTINCT "Departure","Return","Departure_station_id","Departure_station_name","Return_station_id","Return_station_name","Covered_distance_m","Duration_sec" FROM raw_journeys WHERE "Duration_sec" >= 10 AND "Covered_distance_m" >= 10 ORDER BY "Departure" ASC;
+INSERT INTO journeys SELECT DISTINCT
+  "Departure",
+  "Return",
+  "Departure_station_id",
+  "Departure_station_name",
+  "Return_station_id",
+  "Return_station_name",
+  "Covered_distance_m",
+  "Duration_sec"
+FROM raw_journeys
+WHERE "Duration_sec" >= 10 AND "Covered_distance_m" >= 10
+ORDER BY "Departure" ASC;
+
 DROP TABLE raw_journeys;
-CREATE TABLE stations ("FID" INTEGER,"ID" INTEGER,"Nimi","Namn","Name","Osoite","Adress","Kaupunki","Stad","Operaattor","Kapasiteet" INTEGER,"x","y");
+CREATE TABLE stations (
+  "FID" INTEGER,
+  "ID" INTEGER,
+  "Nimi",
+  "Namn",
+  "Name",
+  "Osoite",
+  "Adress",
+  "Kaupunki",
+  "Stad",
+  "Operaattor",
+  "Kapasiteet" INTEGER,
+  "x",
+  "y"
+);
 .import $DATASET_4 stations
 ALTER TABLE stations ADD COLUMN JourneysFrom INTEGER;
 ALTER TABLE stations ADD COLUMN JourneysTo INTEGER;
@@ -71,11 +132,11 @@ WHERE EXISTS (
     WHERE journeys.Departure_station_id = stations.ID
     OR journeys.Return_station_id = stations.ID
 );
+DELETE FROM stations WHERE ROWID = 1;
 .save $DB_NAME
+.sleep 2
 .exit
 EOF
-
-sleep 1 # Wait for the database to finish writing
 
 echo "Data imported and saved to $DB_NAME"
 

@@ -2,9 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	db "hsk-bikeapp-solita/database"
-	"io"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -14,34 +13,31 @@ func StationsGet(w http.ResponseWriter, r *http.Request) {
 
 	params := r.URL.Query()
 
-	fmt.Println(params)
-
 	filter := db.StationFilter{}
 
 	if id, isExist := params["id"]; isExist {
-		fmt.Println(id)
 		filter.StationId, err = strconv.Atoi(id[0])
 	}
 
 	if err != nil {
-		errorMessage := "Invalid station id"
-		GetErrorResponse(w, errorMessage, http.StatusBadRequest)
+		log.Println("Invalid station id")
+		http.Error(w, "Invalid station id", http.StatusBadRequest)
 		return
 	}
 
 	stations, err := DB.GetStations(filter)
 	if err != nil {
-		errorMessage := "Error while getting station" // temp err message
-		GetErrorResponse(w, errorMessage, http.StatusBadRequest)
+		log.Println("Error while getting stations:", err)
+		http.Error(w, "Error while getting stations", http.StatusBadRequest)
 		return
 	}
-	
-	w.WriteHeader(http.StatusAccepted)
-	result, err := json.Marshal(stations)
-	if err != nil {
-		//todo error handling
-		fmt.Println("error json")
-	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 
-	io.WriteString(w, string(result))
+	if err := json.NewEncoder(w).Encode(stations); err != nil {
+        log.Println("Error encoding response:", err)
+        http.Error(w, "Error encoding response", http.StatusInternalServerError)
+        return
+    }
+
 }
