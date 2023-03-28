@@ -3,33 +3,38 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	db "hsk-bikeapp-solita/database"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 func StationsGet(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	// params := r.URL.Query()
+	params := r.URL.Query()
 
-	// filter := db.StationsFilter{}
+	fmt.Println(params)
 
-	// // if id, isExist := params["id"]; isExist {
-	// 	filter.StationID, err = strconv.Atoi(stationId[0])
-	// }
+	filter := db.StationFilter{}
 
-	// if err != nil {
-	// 	errorMessage := "Invalid station id"
-	// GetErrorResponse(w, errorMessage, http.StatusBadRequest)
-	// return
-	// } else {
-		stations, err := DB.GetStation()
-		if err != nil {
-			errorMessage := "Error while getting station" // temp err message
-			GetErrorResponse(w, errorMessage, http.StatusBadRequest)
-			return
-		}
-	// }
+	if id, isExist := params["id"]; isExist {
+		fmt.Println(id)
+		filter.StationId, err = strconv.Atoi(id[0])
+	}
+
+	if err != nil {
+		errorMessage := "Invalid station id"
+		GetErrorResponse(w, errorMessage, http.StatusBadRequest)
+		return
+	}
+
+	stations, err := DB.GetStations(filter)
+	if err != nil {
+		errorMessage := "Error while getting station" // temp err message
+		GetErrorResponse(w, errorMessage, http.StatusBadRequest)
+		return
+	}
 	
 	w.WriteHeader(http.StatusAccepted)
 	result, err := json.Marshal(stations)
