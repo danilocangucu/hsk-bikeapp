@@ -2,9 +2,9 @@
 Hello and welcome! I am Danilo and this is the README for my solution of [Solita's pre-assignment](https://github.com/solita/dev-academy-2023-exercise "Go to repo") for the Dev Academy 2023.
 
 ##### Table of contents
-[1. Running the app locally](#running-the-app-locally)
-[2. Data import](#data-import)
-[3. Stations](#stations)
+[1. Running the app locally](#running-the-app-locally)  
+[2. Data import](#data-import)  
+[3. Stations](#stations)  
 
 
 ## Running the app locally
