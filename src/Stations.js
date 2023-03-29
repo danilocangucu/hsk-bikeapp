@@ -1,5 +1,5 @@
 let currentPage = 0;
-let stationsList = document.getElementById('stations-list')
+let stationsSection = document.getElementById('stations-list')
 
 export const getStations = (event) => {
     event.preventDefault()
@@ -17,12 +17,14 @@ const showAllStations = (stations, page) => {
 
     const stationsSlice = stations.slice(start, end);
 
-    stationsList.innerHTML = ""; // clear the previous results
+    stationsSection.innerHTML = ""; // clear the previous results
 
     stationsSlice.forEach((station) => {
         let stationDiv = document.createElement('div')
         stationDiv.innerHTML = `${station.Nimi} / ${station.Namn}`
-        stationsList.appendChild(stationDiv)
+        stationDiv.id = station.ID
+        stationDiv.addEventListener('click', showSingleStation)
+        stationsSection.appendChild(stationDiv)
     });
 
     currentPage = page;
@@ -31,7 +33,7 @@ const showAllStations = (stations, page) => {
 
     const count = document.createElement("div")
     count.innerHTML = `Page ${page + 1} of ${pageCount}`
-    stationsList.appendChild(count)
+    stationsSection.appendChild(count)
 
     if (stationsSlice.length === 10) {
         const nextButton = document.createElement("button");
@@ -39,7 +41,7 @@ const showAllStations = (stations, page) => {
         nextButton.addEventListener("click", () => {
             showAllStations(stations, currentPage + 1);
         });
-        stationsList.appendChild(nextButton);
+        stationsSection.appendChild(nextButton);
     }
 
     if (currentPage > 0){
@@ -48,7 +50,22 @@ const showAllStations = (stations, page) => {
         prevButton.addEventListener("click", () => {
             showAllStations(stations, currentPage - 1);
         });
-        stationsList.appendChild(prevButton)
+        stationsSection.appendChild(prevButton)
     }
     
+}
+
+const showSingleStation = (event) => {
+    fetch("/stations?id=" + event.target.id)
+    .then((response) => response.json())
+    .then((station) => {
+        stationsSection.innerHTML = ""
+        for (const key in station[0]){
+            if (key == 'JourneysFrom' || key == 'JourneysTo'){
+                stationsSection.innerHTML += station[0][key]["String"] + "<br>"
+            } else {
+                stationsSection.innerHTML += station[0][key] + "<br>"
+            }
+        }
+    })
 }
