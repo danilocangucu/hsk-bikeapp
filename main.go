@@ -16,6 +16,10 @@ func main() {
 			Endpoint: "/stations",
 			GetFunction: handlers.StationsGet,
 		},
+		{
+			Endpoint: "/journeys",
+			GetFunction: handlers.JourneysGet,
+		},
 	}
 
 	handlers.Start(collection)
