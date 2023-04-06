@@ -12,8 +12,8 @@ type Db struct {
 }
 
 type Station struct {
-	FID string
-	ID string
+	FID int
+	ID int
 	Nimi string
 	Namn string
 	Name string
@@ -22,15 +22,32 @@ type Station struct {
 	Kaupunki string
 	Stad string
 	Operaattor string
-	Kapasiteet string
-	Longitude string
-	Latitude string
-	JourneysFrom sql.NullString
-	JourneysTo sql.NullString
+	Kapasiteet int
+	Longitude float32
+	Latitude float32
+	JourneysFrom int
+	JourneysTo int
+}
+
+type Journey struct {
+	ID int
+	Departure string
+	Return string
+	DepartureStationId int
+	DepartureStationName string
+	ReturnStationId int
+	ReturnStationName string
+	CoveredDistanceM float64
+	DurationSec int
 }
 
 type StationFilter struct {
 	StationId int
+}
+
+type JourneyFilter struct {
+	LastId int
+	Limit int
 }
 
 func OpenDatabase() (Db, error) {
@@ -75,3 +92,43 @@ func (db *Db) GetStations(filter StationFilter) (stations []Station, err error) 
 	return stations, err
 }
 
+func (db *Db) GetLastJourneyId() (lastJourney JourneyFilter, err error) {
+
+	row, err := db.connection.Query("SELECT MAX(id) FROM all_journeys;")
+	if err != nil {
+		return lastJourney, err
+	}
+
+	for row.Next() {
+		err := row.Scan(&lastJourney.LastId)
+		if err != nil {
+			return lastJourney, err
+		}
+	}
+
+	defer row.Close()
+
+	return lastJourney, err
+}
+
+func (db *Db) GetJourneys(filter JourneyFilter) (journeys []Journey, err error) {
+	var journey Journey
+
+	query := fmt.Sprintf("SELECT * FROM 'all_journeys' WHERE id > %v ORDER BY id LIMIT %v", filter.LastId, filter.Limit)
+	rows, err := db.connection.Query(query)
+
+	if err != nil {
+		return journeys, err
+	}
+
+	for rows.Next() {
+		err := rows.Scan(&journey.ID, &journey.Departure, &journey.Return, &journey.DepartureStationId, &journey.DepartureStationName, &journey.ReturnStationId, &journey.ReturnStationName, &journey.CoveredDistanceM, &journey.DurationSec)
+		if err != nil {
+			return journeys, err
+		}
+		journeys = append(journeys, journey)
+	}
+
+	defer rows.Close()
+	return journeys, err
+}
