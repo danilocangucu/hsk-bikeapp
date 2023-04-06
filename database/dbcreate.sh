@@ -6,97 +6,115 @@ DATASET_2="2021-06.csv"
 DATASET_3="2021-07.csv"
 DATASET_4="726277c507ef4914b0aec3cbcfcbfafc_0.csv"
 DB_NAME="database/hsk-city-bike-app.db"
+ALL_JOURNEYS="all_journeys"
 
-# Delete CSV files if they exist
-if [ -f "$DATASET_1" ]; then
-  rm $DATASET_1
+for JOURNEYS_DATASETS in $DATASET_1 $DATASET_2 $DATASET_3; do
+# Delete CSV files of journeys if they exist & download their newest version
+if [ -f $JOURNEYS_DATASETS ]; then
+  echo "$JOURNEYS_DATASETS removed"
+  rm $JOURNEYS_DATASETS
 fi
-if [ -f "$DATASET_2" ]; then
-  rm $DATASET_2
-fi
-if [ -f "$DATASET_3" ]; then
-  rm $DATASET_3
-fi
+echo "Downloading $JOURNEYS_DATASETS ..."
+  wget -q https://dev.hsl.fi/citybikes/od-trips-2021/$JOURNEYS_DATASETS
+done
+# Delete CSV file of stations it it exist & download its newest version
 if [ -f "$DATASET_4" ]; then
   rm $DATASET_4
 fi
-
-# Download the datasets
-echo "Downloading $DATASET_1 ..."
-wget -q https://dev.hsl.fi/citybikes/od-trips-2021/$DATASET_1
-echo "Downloading $DATASET_2 ..."
-wget -q https://dev.hsl.fi/citybikes/od-trips-2021/$DATASET_2
-echo "Downloading $DATASET_3 ..."
-wget -q https://dev.hsl.fi/citybikes/od-trips-2021/$DATASET_3
 echo "Downloading $DATASET_4 ..."
 wget -q https://opendata.arcgis.com/datasets/$DATASET_4
 
-# Create the database and import data
-echo "Creating database ..."
-sqlite3 $DB_NAME << EOF
-PRAGMA journal_mode = MEMORY;
-.mode csv
+# Loop over each dataset of journeys
+for DATASET in $DATASET_1 $DATASET_2 $DATASET_3; do
+  # Extract the year and month from the dataset filename
+  YEAR=$(echo $DATASET | cut -d "-" -f 1)
+  MONTH=$(echo $DATASET | cut -d "-" -f 2 | cut -d "." -f 1)
 
-DROP TABLE IF EXISTS journeys;
-DROP TABLE IF EXISTS stations;
-DROP TABLE IF EXISTS raw_stations;
+  # Create the table name
+  TABLE_NAME="journeys_$YEAR$MONTH"
 
-CREATE TABLE raw_journeys (
+  # Import the dataset into a raw table
+sqlite3 $DB_NAME <<EOF
+CREATE TABLE raw_journeys$YEAR$MONTH (
   "Departure",
   "Return",
-  "Departure_station_id" INTEGER,
-  "Departure_station_name",
-  "Return_station_id" INTEGER,
-  "Return_station_name",
-  "Covered_distance_m" INTEGER,
-  "Duration_sec" INTEGER
+  "Departure station id" INTEGER,
+  "Departure station name",
+  "Return station id" INTEGER,
+  "Return station name",
+  "Covered distance (m)" INTEGER,
+  "Duration (sec.)" INTEGER
 );
 
-.import $DATASET_1 raw_journeys
-CREATE TABLE journeys AS SELECT DISTINCT
+.mode csv
+.import $DATASET raw_journeys$YEAR$MONTH
+
+CREATE TABLE $TABLE_NAME AS
+SELECT
+  row_number() OVER (ORDER BY "Departure") AS id,
   "Departure",
   "Return",
-  "Departure_station_id",
-  "Departure_station_name",
-  "Return_station_id",
-  "Return_station_name",
-  "Covered_distance_m",
-  "Duration_sec"
-FROM raw_journeys
-WHERE "Duration_sec" >= 10 AND "Covered_distance_m" >= 10
-ORDER BY "Departure" ASC;
-
-DROP TABLE raw_journeys;
-.import $DATASET_2 raw_journeys
-INSERT INTO journeys SELECT DISTINCT
+  "Departure station id",
+  "Departure station name",
+  "Return station id",
+  "Return station name",
+  "Covered distance (m)",
+  "Duration (sec.)"
+FROM raw_journeys$YEAR$MONTH
+WHERE "Duration (sec.)" >= 10 AND "Covered distance (m)" >= 10
+GROUP BY
   "Departure",
   "Return",
-  "Departure_station_id",
-  "Departure_station_name",
-  "Return_station_id",
-  "Return_station_name",
-  "Covered_distance_m",
-  "Duration_sec"
-FROM raw_journeys
-WHERE "Duration_sec" >= 10 AND "Covered_distance_m" >= 10
-ORDER BY "Departure" ASC;
+  "Departure station id",
+  "Departure station name",
+  "Return station id",
+  "Return station name",
+  "Covered distance (m)",
+  "Duration (sec.)";
+DROP TABLE IF EXISTS raw_journeys$YEAR$MONTH;
+DELETE FROM $TABLE_NAME WHERE rowid = (SELECT max(rowid) FROM $TABLE_NAME);
+EOF
+echo "data from $DATASET imported to $TABLE_NAME table in ./$DB_NAME"
+done
 
-DROP TABLE raw_journeys;
-.import $DATASET_3 raw_journeys
-INSERT INTO journeys SELECT DISTINCT
+sqlite3 $DB_NAME <<EOF
+.mode csv
+CREATE TABLE $ALL_JOURNEYS (
+  "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "Departure",
   "Return",
-  "Departure_station_id",
-  "Departure_station_name",
-  "Return_station_id",
-  "Return_station_name",
-  "Covered_distance_m",
-  "Duration_sec"
-FROM raw_journeys
-WHERE "Duration_sec" >= 10 AND "Covered_distance_m" >= 10
-ORDER BY "Departure" ASC;
+  "Departure station id",
+  "Departure station name",
+  "Return station id",
+  "Return station name",
+  "Covered distance (m)",
+  "Duration (sec.)"
+);
 
-DROP TABLE raw_journeys;
+INSERT INTO $ALL_JOURNEYS
+SELECT
+  row_number() OVER (ORDER BY "Departure") AS id,
+  "Departure",
+  "Return",
+  "Departure station id",
+  "Departure station name",
+  "Return station id",
+  "Return station name",
+  "Covered distance (m)",
+  "Duration (sec.)"
+FROM (
+  SELECT *
+  FROM journeys_202105
+  UNION ALL
+  SELECT *
+  FROM journeys_202106
+  UNION ALL
+  SELECT *
+  FROM journeys_202107
+) t;
+
+SELECT "data from all journeys imported to $ALL_JOURNEYS in ./$DB_NAME";
+
 CREATE TABLE stations (
   "FID" INTEGER,
   "ID" INTEGER,
@@ -113,32 +131,24 @@ CREATE TABLE stations (
   "y"
 );
 .import $DATASET_4 stations
+DELETE FROM stations WHERE rowid = 1;
+
+SELECT "data from $DATASET_4 imported to stations table in ./$DB_NAME";
+
 ALTER TABLE stations ADD COLUMN JourneysFrom INTEGER;
 ALTER TABLE stations ADD COLUMN JourneysTo INTEGER;
 UPDATE stations
 SET JourneysFrom = (
     SELECT COUNT(*)
-    FROM journeys
-    WHERE journeys.Departure_station_id = stations.ID
+    FROM $ALL_JOURNEYS
+    WHERE $ALL_JOURNEYS."Departure station id" = stations.ID
 ),
 JourneysTo = (
     SELECT COUNT(*)
-    FROM journeys
-    WHERE journeys.Return_station_id = stations.ID
-)
-WHERE EXISTS (
-    SELECT 1
-    FROM journeys
-    WHERE journeys.Departure_station_id = stations.ID
-    OR journeys.Return_station_id = stations.ID
+    FROM $ALL_JOURNEYS
+    WHERE $ALL_JOURNEYS."Return station id" = stations.ID
 );
-DELETE FROM stations WHERE ROWID = 1;
+
+SELECT "data created JourneysFrom and JourneysTo at stations table in ./$DB_NAME";
 .save $DB_NAME
-.sleep 2
-.exit
 EOF
-
-echo "Data imported and saved to $DB_NAME"
-
-rm $DATASET_1 $DATASET_2 $DATASET_3 $DATASET_4
-echo "$DATASET_1, $DATASET_2, $DATASET_3 and $DATASET_4 removed"
