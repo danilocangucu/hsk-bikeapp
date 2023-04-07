@@ -1,21 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="src/App.js" type="module"></script>
+    <link rel="stylesheet" href="src/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <div id="stations">
-    <a href="/stations">go to stations!</a>
+    <div class="page-wrapper">
+        <div class="video-container">
+            <video autoplay loop muted>
+                <source src="src/video.mp4" type="video/mp4">
+            </video>
+            <div class="bike-box">
+                <h1>BIKE!</h1>
+            </div>
+        </div>
+        <!-- <div id="stations">
+            <a href="/stations">go to stations!</a>
+        </div> -->
+        <!-- <div id="journeys">
+            <a href="/journeys">go to journeys!</a>
+        </div> -->
+        <div class="stations">
+            <h1>STATIONS</h1>
+            <div class="stations-grid">
+                <div id="stations-list"></div>
+                <div id="station-details"></div>
+            </div>
+        </div>
+        <div id="journeys-list"></div>
     </div>
-    <div id="journeys">
-    <a href="/journeys">go to journeys!</a>
-    </div>
-    <div id="stations-list"></div>
-    <div id="station-details"></div>
-    <div id="journeys-list"></div>
 </body>
+
 </html>

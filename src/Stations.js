@@ -2,8 +2,7 @@ let stationsList = document.getElementById('stations-list')
 let stationDetails = document.getElementById('station-details')
 let currentPage = 0;
 
-export const getStations = (event) => {
-    event.preventDefault()
+export const getStations = () => {
     fetch("/stations")
     .then((response) => response.json())
     .then((stations) => {
@@ -22,8 +21,9 @@ const showAllStations = (stations, page) => {
 
     stationsSlice.forEach((station) => {
         let stationDiv = document.createElement('div')
-        stationDiv.innerHTML = `${station.Nimi} / ${station.Namn}`
+        stationDiv.innerHTML = `${station.Nimi}<br>${station.Namn}`
         stationDiv.id = station.ID
+        stationDiv.className = "station-names"
         stationDiv.addEventListener('click', showSingleStation)
         stationsList.appendChild(stationDiv)
     });
@@ -31,10 +31,11 @@ const showAllStations = (stations, page) => {
     currentPage = page;
 
     const pageCount = Math.ceil(stations.length / 10);
-
+    const pagesDiv = document.createElement("div")
+    pagesDiv.id = "stations-pages"
     const count = document.createElement("div")
     count.innerHTML = `Page ${page + 1} of ${pageCount}`
-    stationsList.appendChild(count)
+    pagesDiv.appendChild(count)
 
     if (stationsSlice.length === 10) {
         const nextButton = document.createElement("button");
@@ -42,7 +43,7 @@ const showAllStations = (stations, page) => {
         nextButton.addEventListener("click", () => {
             showAllStations(stations, currentPage + 1);
         });
-        stationsList.appendChild(nextButton);
+        pagesDiv.appendChild(nextButton);
     }
 
     if (currentPage > 0){
@@ -51,12 +52,12 @@ const showAllStations = (stations, page) => {
         prevButton.addEventListener("click", () => {
             showAllStations(stations, currentPage - 1);
         });
-        stationsList.appendChild(prevButton)
+        pagesDiv.appendChild(prevButton)
     }
+
+    stationsList.appendChild(pagesDiv)
     
 }
-
-// const isJourneyCount = (key) => key === 'JourneysFrom' || key === 'JourneysTo'
 
 const showSingleStation = (event) => {
     fetch(`/stations?id=${event.target.id}`)
