@@ -1,72 +1,129 @@
 let stationsList = document.getElementById('stations-list')
-let stationDetails = document.getElementById('station-details')
-let currentPage = 0;
+let stationDetails = document.getElementById('station-details-text')
 
 export const getStations = () => {
     fetch("/stations")
     .then((response) => response.json())
     .then((stations) => {
-        showAllStations(stations, 0)
+        showAllStations(stations)
     })
-
 }
 
-const showAllStations = (stations, page) => {
-    const start = page * 10;
-    const end = start + 10;
+const showAllStations = (stations) => {
+  const itemsPerPage = 20;
+  let currentPage = 1;
 
-    const stationsSlice = stations.slice(start, end);
+  const renderStations = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const stationsToRender = stations.slice(startIndex, endIndex);
 
-    stationsList.innerHTML = ""; // clear the previous results
-
-    stationsSlice.forEach((station) => {
-        let stationDiv = document.createElement('div')
-        stationDiv.innerHTML = `${station.Nimi}<br>${station.Namn}`
-        stationDiv.id = station.ID
-        stationDiv.className = "station-names"
-        stationDiv.addEventListener('click', showSingleStation)
-        stationsList.appendChild(stationDiv)
+    const stationElements = stationsToRender.map(station => {
+      const stationDiv = document.createElement("div");
+      stationDiv.innerHTML = `${station.Nimi}<br>${station.Namn}`;
+      stationDiv.id = station.ID;
+      stationDiv.className = "station-names";
+      stationDiv.addEventListener("click", () => {
+        showSingleStation({detail: {id: station.ID}});
+      });
+      return stationDiv;
     });
 
-    currentPage = page;
+    stationsList.append(...stationElements);
 
-    const pageCount = Math.ceil(stations.length / 10);
-    const pagesDiv = document.createElement("div")
-    pagesDiv.id = "stations-pages"
-    const count = document.createElement("div")
-    count.innerHTML = `Page ${page + 1} of ${pageCount}`
-    pagesDiv.appendChild(count)
-
-    if (stationsSlice.length === 10) {
-        const nextButton = document.createElement("button");
-        nextButton.textContent = "Next";
-        nextButton.addEventListener("click", () => {
-            showAllStations(stations, currentPage + 1);
-        });
-        pagesDiv.appendChild(nextButton);
+    // If the first page is being rendered, pretend the first station was clicked
+    if (currentPage === 1 && startIndex === 0) {
+      showSingleStation({detail: {id: stations[0].ID}});
     }
+  };
 
-    if (currentPage > 0){
-        const prevButton = document.createElement("button");
-        prevButton.textContent = "Previous";
-        prevButton.addEventListener("click", () => {
-            showAllStations(stations, currentPage - 1);
-        });
-        pagesDiv.appendChild(prevButton)
+  renderStations();
+
+  const handleScroll = () => {
+    const scrollTop = stationsList.scrollTop;
+    const scrollHeight = stationsList.scrollHeight;
+    const clientHeight = stationsList.clientHeight;
+
+    if (scrollTop + clientHeight >= scrollHeight - 50) {
+      currentPage += 1;
+      renderStations();
     }
+  };
 
-    stationsList.appendChild(pagesDiv)
-    
-}
+  stationsList.addEventListener("scroll", handleScroll);
+};
+  
 
-const showSingleStation = (event) => {
-    fetch(`/stations?id=${event.target.id}`)
-        .then((response) => response.json())
-        .then((station) => {
-        const [stationData] = station;
-        stationDetails.innerHTML = "";
-        for (const key in stationData) {
-            stationDetails.innerHTML += `${stationData[key]}<br>`;
+const renderMap = async (stationData) => {
+  try {
+    const { Latitude: latitude, Longitude: longitude } = stationData;
+
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoiZGFucjB4IiwiYSI6ImNsZzltd2J6bTBxbGszZG82aXBqOWhleTgifQ.37yRnbvVYtlhioGwoJ6FXw";
+    const mapElement = document.getElementById("station-details-map");
+    const map = new mapboxgl.Map({
+      container: mapElement,
+      style: "./src/style.json",
+      center: [latitude, longitude],
+      zoom: 16,
+    });
+
+    map.on('styleimagemissing', function(e) {
+        if (e.id === 'parking-paid') {
+          map.addImage('parking-paid', {
+            "width": 32,
+            "height": 32,
+            "data": new Uint8Array(4 * 32 * 32).fill(255, 0, 4 * 32 * 32) // Set all pixels to white
+          });
         }
-        });
+      });
+
+    const marker = new mapboxgl.Marker()
+      .setLngLat([latitude, longitude])
+      .addTo(map);
+
+    const popup = new mapboxgl.Popup().setHTML(
+      `<h3>${stationData["Name"]}</h3><p>${stationData["Osoite"]}</p>`
+    );
+
+    marker.setPopup(popup).togglePopup();
+  } catch (error) {
+    console.error("Error rendering map:", error);
+  }
+};
+
+const getData = async (id) => {
+  try {
+    const response = await fetch(`/stations?id=${id}`);
+    const [stationData] = await response.json();
+    return stationData;
+  } catch (error) {
+    console.error("Error fetching station data:", error);
+  }
+};
+
+const showSingleStation = async (event) => {
+  try {
+    const stationData = await getData(event.detail.id);
+    stationDetails.innerHTML = "";
+
+    stationDetails.innerHTML = `<h2>${stationData["Nimi"]},
+    ${stationData["Namn"]}</h2><br>
+    <i class="fas fa-map-marker-alt"></i> Bike station located at ${stationData["Osoite"]}, ${stationData["Adress"]}<br>
+    <i class="fas fa-arrow-circle-up"></i> ${stationData["JourneysFrom"]} journeys began here, while<br>
+    <i class="fas fa-arrow-circle-down"></i> ${stationData["JourneysTo"]} journeys came to an end here.`;
+
+    await renderMap(stationData);
+
+    const stationElements = document.querySelectorAll(".station-names");
+    stationElements.forEach((element) => {
+      if (parseInt(element.id) === event.detail.id) {
+        element.classList.add("selected");
+      } else {
+        element.classList.remove("selected");
+      }
+    });
+  } catch (error) {
+    console.error("Error showing single station:", error);
+  }
 };

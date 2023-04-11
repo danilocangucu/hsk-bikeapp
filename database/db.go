@@ -23,8 +23,8 @@ type Station struct {
 	Stad string
 	Operaattor string
 	Kapasiteet int
-	Longitude float32
 	Latitude float32
+	Longitude float32
 	JourneysFrom int
 	JourneysTo int
 }
@@ -81,7 +81,7 @@ func (db *Db) GetStations(filter StationFilter) (stations []Station, err error) 
 	}
 
 	for rows.Next() {
-		err := rows.Scan(&station.FID, &station.ID, &station.Nimi, &station.Namn, &station.Name, &station.Osoite, &station.Adress, &station.Kaupunki, &station.Stad, &station.Operaattor, &station.Kapasiteet, &station.Longitude, &station.Latitude, &station.JourneysFrom, &station.JourneysTo)
+		err := rows.Scan(&station.FID, &station.ID, &station.Nimi, &station.Namn, &station.Name, &station.Osoite, &station.Adress, &station.Kaupunki, &station.Stad, &station.Operaattor, &station.Kapasiteet, &station.Latitude, &station.Longitude, &station.JourneysFrom, &station.JourneysTo)
 		if err != nil {
 			return stations, err
 		}

@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="src/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
-
 <body>
     <div class="page-wrapper">
         <div class="video-container">
@@ -32,8 +34,13 @@
         <div class="stations">
             <h1>STATIONS</h1>
             <div class="stations-grid">
-                <div id="stations-list"></div>
-                <div id="station-details"></div>
+                <div class="stations-list-wrapper">
+                    <div id="stations-list"></div>
+                </div>
+                <div id="station-details" class="stations-details">
+                    <div id="station-details-text"></div>
+                    <div id="station-details-map" style='max-height: 100%;'></div>
+                </div>
             </div>
         </div>
         <div id="journeys-list"></div>
