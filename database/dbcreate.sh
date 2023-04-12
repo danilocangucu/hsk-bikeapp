@@ -71,7 +71,7 @@ GROUP BY
   "Return station name",
   "Covered distance (m)",
   "Duration (sec.)";
-DROP TABLE IF EXISTS raw_journeys$YEAR$MONTH;
+
 DELETE FROM $TABLE_NAME WHERE rowid = (SELECT max(rowid) FROM $TABLE_NAME);
 EOF
 echo "data from $DATASET imported to $TABLE_NAME table in ./$DB_NAME"
