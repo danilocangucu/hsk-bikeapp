@@ -31,7 +31,6 @@ const showAllStations = (stations) => {
 
     stationsList.append(...stationElements);
 
-    // If the first page is being rendered, pretend the first station was clicked
     if (currentPage === 1 && startIndex === 0) {
       showSingleStation({detail: {id: stations[0].ID}});
     }
@@ -109,7 +108,7 @@ const showSingleStation = async (event) => {
 
     stationDetails.innerHTML = `<h2>${stationData["Nimi"]},
     ${stationData["Namn"]}</h2><br>
-    <i class="fas fa-map-marker-alt"></i> Bike station located at ${stationData["Osoite"]}, ${stationData["Adress"]}<br>
+    <i class="fas fa-map-marker-alt"></i> Bike station located at ${stationData["Osoite"]}, ${stationData["Adress"]}.<br>
     <i class="fas fa-arrow-circle-up"></i> ${stationData["JourneysFrom"]} journeys began here, while<br>
     <i class="fas fa-arrow-circle-down"></i> ${stationData["JourneysTo"]} journeys came to an end here.`;
 
@@ -127,3 +126,24 @@ const showSingleStation = async (event) => {
     console.error("Error showing single station:", error);
   }
 };
+
+const handleWheelEvent = (event) => {
+  event.preventDefault();
+  stationsList.scrollLeft += event.deltaY + event.deltaX;
+}
+
+const mediaQuery = window.matchMedia("(max-width: 590px)");
+
+if (mediaQuery.matches) {
+  stationsList.addEventListener("wheel", handleWheelEvent);
+} else {
+  stationsList.removeEventListener("wheel", handleWheelEvent);
+}
+
+mediaQuery.addEventListener("change", (event) => {
+  if (event.matches) {
+    stationsList.addEventListener("wheel", handleWheelEvent);
+  } else {
+    stationsList.removeEventListener("wheel", handleWheelEvent);
+  }
+});
