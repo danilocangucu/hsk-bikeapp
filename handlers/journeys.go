@@ -19,7 +19,6 @@ func JourneysGet(w http.ResponseWriter, r *http.Request) {
 	if id, isExist := params["lastJourneyId"]; isExist {
 		filter.LastId, err = strconv.Atoi(id[0])
 	}
-	fmt.Println(filter.LastId)
 
 	if err != nil {
 		log.Println("Invalid last journey id")

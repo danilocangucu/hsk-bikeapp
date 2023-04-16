@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 const responseError = "Response error"
@@ -48,9 +49,10 @@ func Start(collection []Handler) {
 	for _, handler := range collection {
 		mux.Handle(handler.Endpoint, GetFunc(handler))
 	}
-	fmt.Println("server started")
+
 	jsFs := http.FileServer(http.Dir("./src"))
 	mux.Handle("/src/", http.StripPrefix("/src/", jsFs))
+	log.Printf("Server listening on http://localhost:8080/")
 	log.Fatal(http.ListenAndServe(":8080", mux))
 
 }
@@ -79,9 +81,14 @@ func GetErrorResponse(w http.ResponseWriter, errorMessage string, statusCode int
 }
 
 func IndexGet(w http.ResponseWriter, r *http.Request) {
-    templ := template.Must(template.New("index.html").ParseFiles("index.html"))
-    err := templ.ExecuteTemplate(w, "index.html", "")
+    tmplPath := filepath.Join(".", "index.html")
+    tmpl, err := template.ParseFiles(tmplPath)
     if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    if err := tmpl.Execute(w, nil); err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }

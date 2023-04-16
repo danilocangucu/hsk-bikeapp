@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"hsk-bikeapp-solita/handlers"
 )
 
 func main() {
-	fmt.Println("running main")
 	collection := []handlers.Handler{
 		{
 			Endpoint: "/",

@@ -1,10 +1,12 @@
-package main
+package tests
 
 import (
 	"database/sql"
 	"encoding/csv"
 	"fmt"
 	"os"
+	"path"
+	"strings"
 	"testing"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -12,14 +14,14 @@ import (
 
 func TestImportData1(t *testing.T) {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "./database/hsk-city-bike-app.db")
+	db, err := sql.Open("sqlite3", "../database/hsk-city-bike-app.db")
 	if err != nil {
 		t.Fatalf("failed to open database connection: %v", err)
 	}
 	defer db.Close()
 
 	// Import the data from each CSV file and verify it was imported correctly
-	for _, filename := range []string{"726277c507ef4914b0aec3cbcfcbfafc_0.csv"} {
+	for _, filename := range []string{"../datasets/726277c507ef4914b0aec3cbcfcbfafc_0.csv"} {
 		// Open the CSV file
 		file, err := os.Open(filename)
 		if err != nil {
@@ -41,7 +43,8 @@ func TestImportData1(t *testing.T) {
 		}
 
 		// Create a table for the data
-		tablename := fmt.Sprintf("test_%s", filename[0:len(filename)-4])
+		tablename := fmt.Sprintf("test_%s", strings.TrimSuffix(path.Base(filename), path.Ext(filename)))
+		fmt.Println(tablename)
 
 		// Drop the table if it exists
         _, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", tablename))

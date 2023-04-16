@@ -55,7 +55,6 @@ func OpenDatabase() (Db, error) {
 	if err != nil{
 		return Db{}, err
 	}
-	fmt.Println("db opened")
 
 	return Db{connection: db}, nil
 }

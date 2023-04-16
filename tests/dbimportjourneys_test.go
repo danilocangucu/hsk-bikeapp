@@ -1,4 +1,4 @@
-package main
+package tests
 
 import (
 	"database/sql"
@@ -12,7 +12,7 @@ import (
 
 func TestImportData(t *testing.T) {
 	// Open a connection to the database
-	db, err := sql.Open("sqlite3", "./database/hsk-city-bike-app.db")
+	db, err := sql.Open("sqlite3", "../database/hsk-city-bike-app.db")
 	if err != nil {
 		t.Fatalf("failed to open database connection: %v", err)
 	}
@@ -24,9 +24,9 @@ func TestImportData(t *testing.T) {
 		tablename  string
 		rawjourney string
 	}{
-		{"2021-05.csv", "test_2021_05", "raw_journeys202105"},
-		{"2021-06.csv", "test_2021_06", "raw_journeys202106"},
-		{"2021-07.csv", "test_2021_07", "raw_journeys202107"},
+		{"../datasets/2021-05.csv", "test_2021_05", "raw_journeys202105"},
+		{"../datasets/2021-06.csv", "test_2021_06", "raw_journeys202106"},
+		{"../datasets/2021-07.csv", "test_2021_07", "raw_journeys202107"},
 	} {
 		// Open the CSV file
 		file, err := os.Open(filedata.filename)
