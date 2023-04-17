@@ -17,20 +17,20 @@ const responseError = "Response error"
 type handlerFunction func(w http.ResponseWriter, r *http.Request)
 
 type Handler struct {
-	Endpoint string
-	Method string
-	GetFunction handlerFunction
+	Endpoint     string
+	Method       string
+	GetFunction  handlerFunction
 	PostFunction handlerFunction
 }
 
 type Response struct {
 	Status string
-	Data string
+	Data   string
 }
 
 type ResponseError struct {
 	Status string
-	Error string
+	Error  string
 }
 
 var DB database.Db
@@ -38,7 +38,7 @@ var err error
 
 func Start(collection []Handler) {
 	DB, err = database.OpenDatabase()
-	if err != nil{
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error opening database: %v\n", err)
 		os.Exit(1)
 	}
@@ -58,7 +58,7 @@ func Start(collection []Handler) {
 }
 
 func GetFunc(handler Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request){
+	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" && handler.GetFunction != nil {
 			handler.GetFunction(w, r)
 		} else if r.Method == "POST" && handler.PostFunction != nil {
@@ -81,15 +81,15 @@ func GetErrorResponse(w http.ResponseWriter, errorMessage string, statusCode int
 }
 
 func IndexGet(w http.ResponseWriter, r *http.Request) {
-    tmplPath := filepath.Join(".", "index.html")
-    tmpl, err := template.ParseFiles(tmplPath)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
+	tmplPath := filepath.Join(".", "index.html")
+	tmpl, err := template.ParseFiles(tmplPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-    if err := tmpl.Execute(w, nil); err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
+	if err := tmpl.Execute(w, nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

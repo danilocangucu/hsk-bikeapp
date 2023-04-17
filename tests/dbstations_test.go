@@ -12,7 +12,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func TestImportData1(t *testing.T) {
+func TestImportStationsDataFromCSV(t *testing.T) {
 	// Open a connection to the database
 	db, err := sql.Open("sqlite3", "../database/hsk-city-bike-app.db")
 	if err != nil {
@@ -44,13 +44,12 @@ func TestImportData1(t *testing.T) {
 
 		// Create a table for the data
 		tablename := fmt.Sprintf("test_%s", strings.TrimSuffix(path.Base(filename), path.Ext(filename)))
-		fmt.Println(tablename)
 
 		// Drop the table if it exists
-        _, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", tablename))
-        if err != nil {
-            t.Fatalf("failed to drop table for CSV file %q: %v", filename, err)
-        }
+		_, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", tablename))
+		if err != nil {
+			t.Fatalf("failed to drop table for CSV file %q: %v", filename, err)
+		}
 
 		_, err = db.Exec(fmt.Sprintf("CREATE TABLE %s (FID INT, ID INT, Nimi TEXT, Namn TEXT, Name TEXT, Osoite TEXT, Adress TEXT, Kaupunki TEXT, Stad TEXT, Operaattor TEXT, Kapasiteet INT, x REAL, y REAL)", tablename))
 		if err != nil {
@@ -106,8 +105,8 @@ func TestImportData1(t *testing.T) {
 		}
 
 		_, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", tablename))
-        if err != nil {
-            t.Fatalf("failed to drop table for CSV file %q: %v", filename, err)
-        }
+		if err != nil {
+			t.Fatalf("failed to drop table for CSV file %q: %v", filename, err)
+		}
 	}
 }

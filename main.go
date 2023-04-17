@@ -7,15 +7,15 @@ import (
 func main() {
 	collection := []handlers.Handler{
 		{
-			Endpoint: "/",
+			Endpoint:    "/",
 			GetFunction: handlers.IndexGet,
 		},
 		{
-			Endpoint: "/stations",
+			Endpoint:    "/stations",
 			GetFunction: handlers.StationsGet,
 		},
 		{
-			Endpoint: "/journeys",
+			Endpoint:    "/journeys",
 			GetFunction: handlers.JourneysGet,
 		},
 	}

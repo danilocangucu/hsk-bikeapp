@@ -12,33 +12,33 @@ type Db struct {
 }
 
 type Station struct {
-	FID int
-	ID int
-	Nimi string
-	Namn string
-	Name string
-	Osoite string
-	Adress string
-	Kaupunki string
-	Stad string
-	Operaattor string
-	Kapasiteet int
-	Latitude float32
-	Longitude float32
+	FID          int
+	ID           int
+	Nimi         string
+	Namn         string
+	Name         string
+	Osoite       string
+	Adress       string
+	Kaupunki     string
+	Stad         string
+	Operaattor   string
+	Kapasiteet   int
+	Latitude     float32
+	Longitude    float32
 	JourneysFrom int
-	JourneysTo int
+	JourneysTo   int
 }
 
 type Journey struct {
-	ID int
-	Departure string
-	Return string
-	DepartureStationId int
+	ID                   int
+	Departure            string
+	Return               string
+	DepartureStationId   int
 	DepartureStationName string
-	ReturnStationId int
-	ReturnStationName string
-	CoveredDistanceM float64
-	DurationSec int
+	ReturnStationId      int
+	ReturnStationName    string
+	CoveredDistanceM     float64
+	DurationSec          int
 }
 
 type StationFilter struct {
@@ -47,12 +47,12 @@ type StationFilter struct {
 
 type JourneyFilter struct {
 	LastId int
-	Limit int
+	Limit  int
 }
 
 func OpenDatabase() (Db, error) {
 	db, err := sql.Open("sqlite3", "./database/hsk-city-bike-app.db")
-	if err != nil{
+	if err != nil {
 		return Db{}, err
 	}
 
@@ -67,7 +67,7 @@ func (db *Db) GetStations(filter StationFilter) (stations []Station, err error) 
 	var station Station
 	var query string
 
-	if filter != (StationFilter{}){
+	if filter != (StationFilter{}) {
 		query = fmt.Sprintf("SELECT FID, ID, Nimi, Namn, Name, Osoite, Adress, Kaupunki, Stad, Operaattor, Kapasiteet, x, y, JourneysFrom, JourneysTo FROM stations WHERE ID = %v", filter.StationId)
 
 	} else {

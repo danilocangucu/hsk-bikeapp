@@ -10,7 +10,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func TestImportData(t *testing.T) {
+func TestImportJourneysDataFromCSV(t *testing.T) {
 	// Open a connection to the database
 	db, err := sql.Open("sqlite3", "../database/hsk-city-bike-app.db")
 	if err != nil {
@@ -42,61 +42,69 @@ func TestImportData(t *testing.T) {
 			t.Fatalf("failed to parse CSV file %q: %v", filedata.filename, err)
 		}
 
+		// Check if the rawjourney table exists
+		var rawJourneyTableExists int
+		err = db.QueryRow(fmt.Sprintf("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%s'", filedata.rawjourney)).Scan(&rawJourneyTableExists)
+		if err != nil {
+			t.Fatalf("failed to query rawjourney table for CSV file %q: %v", filedata.filename, err)
+		}
+
+		if rawJourneyTableExists == 0 {
+			_, err = db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS `%s` (Departure TEXT, Return TEXT, `Departure station id` INTEGER, `Departure station name` TEXT, `Return station id` INTEGER, `Return station name` TEXT, `Covered distance (m)` INTEGER, `Duration (sec.)` INTEGER)", filedata.rawjourney))
+			if err != nil {
+				t.Fatalf("failed to create table for CSV file %q: %v", filedata.filename, err)
+			}
+		}
+
 		// Drop the table if it exists
-		 _, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", filedata.tablename))
+		_, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", filedata.tablename))
 		if err != nil {
 			t.Fatalf("failed to drop table for CSV file %q: %v", filedata.filename, err)
 		}
 
-		// Create a table for the data
+		// Create a table for the test data
 		_, err = db.Exec(fmt.Sprintf("CREATE TABLE `%s` (Departure TEXT, Return TEXT, `Departure station id` INTEGER, `Departure station name` TEXT, `Return station id` INTEGER, `Return station name` TEXT, `Covered distance (m)` INTEGER, `Duration (sec.)` INTEGER)", filedata.tablename))
 		if err != nil {
 			t.Fatalf("failed to create table for CSV file %q: %v", filedata.filename, err)
 		}
 
-        // Insert the data into the table
-        tx, err := db.Begin()
-        if err != nil {
-            t.Fatalf("failed to start transaction for CSV file %q: %v", filedata.filename, err)
-        }
-        stmt, err := tx.Prepare(fmt.Sprintf("INSERT INTO %s (Departure, Return, `Departure station id`, `Departure station name`, `Return station id`, `Return station name`, `Covered distance (m)`, `Duration (sec.)`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", filedata.tablename))
-        if err != nil {
-            t.Fatalf("failed to prepare statement for CSV file %q: %v", filedata.filename, err)
-        }
-        defer stmt.Close()
+		// Insert the data into the test table
+		tx, err := db.Begin()
+		if err != nil {
+			t.Fatalf("failed to start transaction for CSV file %q: %v", filedata.filename, err)
+		}
+		stmt, err := tx.Prepare(fmt.Sprintf("INSERT INTO %s (Departure, Return, `Departure station id`, `Departure station name`, `Return station id`, `Return station name`, `Covered distance (m)`, `Duration (sec.)`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", filedata.tablename))
+		if err != nil {
+			t.Fatalf("failed to prepare statement for CSV file %q: %v", filedata.filename, err)
+		}
+		defer stmt.Close()
 
-        for _, record := range records {
-            _, err = stmt.Exec(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7])
-            if err != nil {
-                t.Fatalf("failed to insert record into table for CSV file %q: %v", filedata.filename, err)
-            }
-        }
+		for _, record := range records {
+			_, err = stmt.Exec(record[0], record[1], record[2], record[3], record[4], record[5], record[6], record[7])
+			if err != nil {
+				t.Fatalf("failed to insert record into table for CSV file %q: %v", filedata.filename, err)
+			}
+		}
 
-        err = tx.Commit()
-        if err != nil {
-            t.Fatalf("failed to commit transaction for CSV file %q: %v", filedata.filename, err)
-        }
+		err = tx.Commit()
+		if err != nil {
+			t.Fatalf("failed to commit transaction for CSV file %q: %v", filedata.filename, err)
+		}
 
-        // Verify the imported data
-        var importedCount int
-        err = db.QueryRow(fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE `Departure station id` NOT IN (SELECT `Departure station id` FROM %s) OR `Return station id` NOT IN (SELECT `Return station id` FROM %s)", filedata.tablename, filedata.rawjourney, filedata.rawjourney)).Scan(&importedCount)
-        if err != nil {
-            t.Fatalf("failed to query imported data for CSV file %q: %v", filedata.filename, err)
-        }
-        if importedCount != 0 {
-            t.Errorf("failed to import all data for CSV file %q: %d rows not imported", filedata.filename, importedCount)
-        }
+		// Verify the imported data
+		var importedCount int
+		err = db.QueryRow(fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE `Departure station id` NOT IN (SELECT `Departure station id` FROM %s) OR `Return station id` NOT IN (SELECT `Return station id` FROM %s)", filedata.tablename, filedata.rawjourney, filedata.rawjourney)).Scan(&importedCount)
+		if err != nil {
+			t.Fatalf("failed to query imported data for CSV file %q: %v", filedata.filename, err)
+		}
+		if importedCount != 0 {
+			t.Errorf("failed to import all data for CSV file %q: %d rows not imported", filedata.filename, importedCount)
+		}
 
-        // Drop the rawjourneys table
-        _, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", filedata.rawjourney))
-        if err != nil {
-            t.Fatalf("failed to drop rawjourneys table for CSV file %q: %v", filedata.filename, err)
-        }
-
-        // Drop the test table
-        _, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", filedata.tablename))
-        if err != nil {
-            t.Fatalf("failed to drop table for CSV file %q: %v", filedata.filename, err)
-        }
-    }
+		// Drop the test table
+		_, err = db.Exec(fmt.Sprintf("DROP TABLE IF EXISTS %s", filedata.tablename))
+		if err != nil {
+			t.Fatalf("failed to drop table for CSV file %q: %v", filedata.filename, err)
+		}
+	}
 }
