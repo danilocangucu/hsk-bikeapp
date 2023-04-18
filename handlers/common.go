@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 )
 
 const responseError = "Response error"
@@ -52,6 +53,7 @@ func Start(collection []Handler) {
 
 	jsFs := http.FileServer(http.Dir("./src"))
 	mux.Handle("/src/", http.StripPrefix("/src/", jsFs))
+
 	log.Printf("Server listening on http://localhost:8080/")
 	log.Fatal(http.ListenAndServe(":8080", mux))
 
@@ -78,6 +80,15 @@ func GetErrorResponse(w http.ResponseWriter, errorMessage string, statusCode int
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 	io.WriteString(w, string(result))
+}
+
+func HandleNotFound(w http.ResponseWriter, r *http.Request) {
+	if match, _ := regexp.MatchString(`^/.+$`, r.URL.Path); match {
+		http.NotFound(w, r)
+		return
+	} else {
+		http.Redirect(w, r, "/index", http.StatusMovedPermanently)
+	}
 }
 
 func IndexGet(w http.ResponseWriter, r *http.Request) {

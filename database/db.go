@@ -70,6 +70,10 @@ func (db *Db) GetStations(filter StationFilter) (stations []Station, err error) 
 	if filter != (StationFilter{}) {
 		query = fmt.Sprintf("SELECT FID, ID, Nimi, Namn, Name, Osoite, Adress, Kaupunki, Stad, Operaattor, Kapasiteet, x, y, JourneysFrom, JourneysTo FROM stations WHERE ID = %v", filter.StationId)
 
+		if err := db.connection.QueryRow(fmt.Sprintf("SELECT ID FROM stations WHERE ID = %v", filter.StationId)).Scan(&station.ID); err != nil {
+			return stations, err
+		}
+
 	} else {
 		query = "select FID,ID,Nimi,Namn,Name,Osoite,Adress,Kaupunki,Stad,Operaattor,Kapasiteet,x,y,JourneysFrom,JourneysTo from stations"
 	}

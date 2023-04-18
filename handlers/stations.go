@@ -12,16 +12,20 @@ func StationsGet(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	params := r.URL.Query()
-
 	filter := db.StationFilter{}
 
 	if id, isExist := params["id"]; isExist {
 		filter.StationId, err = strconv.Atoi(id[0])
+		if err != nil {
+			log.Println("Invalid query parameter:", err)
+			http.Error(w, "Error while getting stations", http.StatusBadRequest)
+			return
+		}
 	}
 
 	if err != nil {
-		log.Println("Invalid station id")
-		http.Error(w, "Invalid station id", http.StatusBadRequest)
+		log.Println("Invalid station id:", err)
+		http.Error(w, "Error while getting stations", http.StatusBadRequest)
 		return
 	}
 
@@ -35,9 +39,9 @@ func StationsGet(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(stations); err != nil {
-        log.Println("Error encoding response:", err)
-        http.Error(w, "Error encoding response", http.StatusInternalServerError)
-        return
-    }
+		log.Println("Error encoding response:", err)
+		http.Error(w, "Error encoding response", http.StatusInternalServerError)
+		return
+	}
 
 }

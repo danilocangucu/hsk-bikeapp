@@ -7,7 +7,7 @@ import (
 func main() {
 	collection := []handlers.Handler{
 		{
-			Endpoint:    "/",
+			Endpoint:    "/index",
 			GetFunction: handlers.IndexGet,
 		},
 		{
@@ -17,6 +17,10 @@ func main() {
 		{
 			Endpoint:    "/journeys",
 			GetFunction: handlers.JourneysGet,
+		},
+		{
+			Endpoint:    "/",
+			GetFunction: handlers.HandleNotFound,
 		},
 	}
 
