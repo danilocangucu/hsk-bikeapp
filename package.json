@@ -10,5 +10,8 @@
   "main": "/src/App.js",
   "repository": "https://github.com/danilocangucu/hsk-bikeapp-solita.git",
   "author": "danr0x <danr0x@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "^12.10.0"
+  }
 }
