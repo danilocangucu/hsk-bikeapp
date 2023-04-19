@@ -65,7 +65,7 @@ func testerIsMacUser(t *testing.T, projectDir string) {
 			log.Println("Localhost is available")
 			break
 		} else {
-			log.Printf("Attempt %d of %d: Localhost is not available yet!\n", attemptsCount, maxAttempts)
+			log.Printf("Localhost is not available yet! Retrying in 1 second (Attempt %d of %d)\n", attemptsCount, maxAttempts)
 		}
 
 		if attemptsCount == maxAttempts {
@@ -73,7 +73,7 @@ func testerIsMacUser(t *testing.T, projectDir string) {
 		}
 
 		attemptsCount++
-		time.Sleep(time.Millisecond * 1500)
+		time.Sleep(time.Second)
 	}
 
 	if attemptsCount != maxAttempts {
