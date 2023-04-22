@@ -15,6 +15,10 @@ func main() {
 			GetFunction: handlers.StationsGet,
 		},
 		{
+			Endpoint:     "/addstation",
+			PostFunction: handlers.AddStationPost,
+		},
+		{
 			Endpoint:    "/journeys",
 			GetFunction: handlers.JourneysGet,
 		},
