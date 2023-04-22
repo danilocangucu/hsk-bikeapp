@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"hsk-bikeapp-solita/database"
 	"html/template"
@@ -13,8 +12,6 @@ import (
 	"regexp"
 )
 
-const responseError = "Response error"
-
 type handlerFunction func(w http.ResponseWriter, r *http.Request)
 
 type Handler struct {
@@ -22,16 +19,6 @@ type Handler struct {
 	Method       string
 	GetFunction  handlerFunction
 	PostFunction handlerFunction
-}
-
-type Response struct {
-	Status string
-	Data   string
-}
-
-type ResponseError struct {
-	Status string
-	Error  string
 }
 
 var DB database.Db
@@ -43,7 +30,7 @@ func Start(collection []Handler) {
 		fmt.Fprintf(os.Stderr, "Error opening database: %v\n", err)
 		os.Exit(1)
 	}
-	defer DB.Close()
+	defer DB.CloseDatabase()
 
 	mux := http.NewServeMux()
 
@@ -56,7 +43,6 @@ func Start(collection []Handler) {
 
 	log.Printf("Server listening on http://localhost:8080/")
 	log.Fatal(http.ListenAndServe(":8080", mux))
-
 }
 
 func GetFunc(handler Handler) http.HandlerFunc {
@@ -67,19 +53,9 @@ func GetFunc(handler Handler) http.HandlerFunc {
 			handler.PostFunction(w, r)
 		} else {
 			w.WriteHeader(http.StatusNotFound)
+			io.WriteString(w, "Not found")
 		}
 	}
-}
-
-func GetErrorResponse(w http.ResponseWriter, errorMessage string, statusCode int) {
-	w.WriteHeader(statusCode)
-	response := ResponseError{Status: responseError, Error: errorMessage}
-	result, err := json.Marshal(response)
-	if err != nil {
-		log.Println("Error marshaling JSON response:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-	}
-	io.WriteString(w, string(result))
 }
 
 func HandleNotFound(w http.ResponseWriter, r *http.Request) {
