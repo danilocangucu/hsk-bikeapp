@@ -36,6 +36,42 @@
                     <div id="station-details-map"></div>
                 </div>
             </div>
+            <div id="add-stations">
+                <form id="station-form">
+                    <label for="ID">ID:</label>
+                    <input type="number" name="ID" id="ID"><br>
+
+                    <label for="Nimi">Finnish name:</label>
+                    <input type="text" name="Nimi" id="Nimi" required><br>
+                
+                    <label for="Namn">Swedish name:</label>
+                    <input type="text" name="Namn" id="Namn" required><br>
+                
+                    <label for="Name">English name:</label>
+                    <input type="text" name="Name" id="Name" required><br>
+                
+                    <label for="Osoite">Address in Finnish:</label>
+                    <input type="text" name="Osoite" id="Osoite" required><br>
+                
+                    <label for="Adress">Address in Swedish:</label>
+                    <input type="text" name="Adress" id="Adress" required><br>
+                
+                    <label for="Operaattor">Operator:</label>
+                    <input type="text" name="Operaattor" id="Operaattor"><br>
+                
+                    <label for="Kapasiteet">Capacity:</label>
+                    <input type="number" name="Kapasiteet" id="Kapasiteet" required><br>
+                
+                    <label for="JourneysFrom">Count of journeys that originated from this station:</label>
+                    <input type="number" name="JourneysFrom" id="JourneysFrom"><br>
+                
+                    <label for="JourneysTo">Count of journeys that ended at this station:</label>
+                    <input type="number" name="JourneysTo" id="JourneysTo"><br>
+                
+                    <button type="submit">Add station!</button>
+                </form>
+                <div id="add-station-response">&nbsp;</div>
+            </div>
         </div>
         <div class="journeys section">
             <h1>JOURNEYS</h1>
