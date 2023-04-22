@@ -131,7 +131,6 @@ func TestGetNonExistingStation(t *testing.T) {
 }
 
 func TestGetInvalidStationID(t *testing.T) {
-
 	resp, err := http.Get("http://localhost:8080/stations?id=abc")
 	if err != nil {
 		t.Fatalf("Error making GET request to localhost: %v", err)

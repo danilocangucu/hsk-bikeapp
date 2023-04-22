@@ -51,7 +51,6 @@ const showAllStations = (stations) => {
 
   stationsList.addEventListener("scroll", handleScroll);
 };
-  
 
 const renderMap = async (stationData) => {
   try {
@@ -91,10 +90,10 @@ const renderMap = async (stationData) => {
   }
 };
 
-const getData = async (id) => {
+const getStationData = async (id) => {
   try {
     const response = await fetch(`/stations?id=${id}`);
-    const [stationData] = await response.json();
+    const stationData = await response.json();
     return stationData;
   } catch (error) {
     console.error("Error fetching station data:", error);
@@ -103,7 +102,7 @@ const getData = async (id) => {
 
 const showSingleStation = async (event) => {
   try {
-    const stationData = await getData(event.detail.id);
+    const stationData = await getStationData(event.detail.id);
     stationDetails.innerHTML = "";
 
     stationDetails.innerHTML = `<h2>${stationData["Nimi"]},
