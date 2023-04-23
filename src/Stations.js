@@ -1,6 +1,8 @@
 let stationsList = document.getElementById('stations-list')
 let stationDetails = document.getElementById('station-details-text')
 
+// Stations list
+
 export const getStations = () => {
     fetch("/stations")
     .then((response) => response.json())
@@ -52,43 +54,7 @@ const showAllStations = (stations) => {
   stationsList.addEventListener("scroll", handleScroll);
 };
 
-const renderMap = async (stationData) => {
-  try {
-    const { Latitude: latitude, Longitude: longitude } = stationData;
-
-    mapboxgl.accessToken =
-      "INSERT_MAPBOX_API_KEY_HERE";
-    const mapElement = document.getElementById("station-details-map");
-    const map = new mapboxgl.Map({
-      container: mapElement,
-      style: "./src/style.json",
-      center: [latitude, longitude],
-      zoom: 16,
-    });
-
-    map.on('styleimagemissing', function(e) {
-        if (e.id === 'parking-paid') {
-          map.addImage('parking-paid', {
-            "width": 32,
-            "height": 32,
-            "data": new Uint8Array(4 * 32 * 32).fill(255, 0, 4 * 32 * 32) // Set all pixels to white
-          });
-        }
-      });
-
-    const marker = new mapboxgl.Marker()
-      .setLngLat([latitude, longitude])
-      .addTo(map);
-
-    const popup = new mapboxgl.Popup().setHTML(
-      `<h3>${stationData["Name"]}</h3><p>${stationData["Osoite"]}</p>`
-    );
-
-    marker.setPopup(popup).togglePopup();
-  } catch (error) {
-    console.error("Error rendering map:", error);
-  }
-};
+// Single station view
 
 const getStationData = async (id) => {
   try {
@@ -125,6 +91,46 @@ const showSingleStation = async (event) => {
     console.error("Error showing single station:", error);
   }
 };
+
+const renderMap = async (stationData) => {
+  try {
+    const { Latitude: latitude, Longitude: longitude } = stationData;
+
+    mapboxgl.accessToken =
+      "INSERT_MAPBOX_API_KEY_HERE";
+    const mapElement = document.getElementById("station-details-map");
+    const map = new mapboxgl.Map({
+      container: mapElement,
+      style: "./src/style.json",
+      center: [latitude, longitude],
+      zoom: 16,
+    });
+
+    map.on('styleimagemissing', function(e) {
+        if (e.id === 'parking-paid') {
+          map.addImage('parking-paid', {
+            "width": 32,
+            "height": 32,
+            "data": new Uint8Array(4 * 32 * 32).fill(255, 0, 4 * 32 * 32) // Set all pixels to white
+          });
+        }
+      });
+
+    const marker = new mapboxgl.Marker()
+      .setLngLat([latitude, longitude])
+      .addTo(map);
+
+    const popup = new mapboxgl.Popup().setHTML(
+      `<h3>${stationData["Name"]}</h3><p>Capacity: ${stationData["Kapasiteet"]} bikes</p>`
+    );
+
+    marker.setPopup(popup).togglePopup();
+  } catch (error) {
+    console.error("Error rendering map:", error);
+  }
+};
+
+// X-scrolling handling for small devices
 
 const handleWheelEvent = (event) => {
   event.preventDefault();

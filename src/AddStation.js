@@ -74,7 +74,6 @@ export const addStation = () => {
   });
 };
 
-
 const validateNewStation = async (newStation) => {
   const addressesValidationResult = await validateAddresses(
     newStation.Adress,
@@ -263,7 +262,7 @@ const validateOperator = (operator) => {
 };
 
 const validateCapacity = (capacity) => {
-  if (isNaN(capacity) || capacity >= 1) {
+  if (isNaN(capacity) || capacity >= 1 || capacity <= 44) {
     return {
       isValid: false,
       error: ["Capacity must be a number greater than or equal to 1."],

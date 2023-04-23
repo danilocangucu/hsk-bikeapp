@@ -3,13 +3,10 @@ package handlers
 import (
 	"fmt"
 	"hsk-bikeapp-solita/database"
-	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
-	"regexp"
 )
 
 type handlerFunction func(w http.ResponseWriter, r *http.Request)
@@ -55,28 +52,5 @@ func GetFunc(handler Handler) http.HandlerFunc {
 			w.WriteHeader(http.StatusNotFound)
 			io.WriteString(w, "Not found")
 		}
-	}
-}
-
-func HandleNotFound(w http.ResponseWriter, r *http.Request) {
-	if match, _ := regexp.MatchString(`^/.+$`, r.URL.Path); match {
-		http.NotFound(w, r)
-		return
-	} else {
-		http.Redirect(w, r, "/index", http.StatusMovedPermanently)
-	}
-}
-
-func IndexGet(w http.ResponseWriter, r *http.Request) {
-	tmplPath := filepath.Join(".", "index.html")
-	tmpl, err := template.ParseFiles(tmplPath)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	if err := tmpl.Execute(w, nil); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
 	}
 }
