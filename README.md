@@ -1,6 +1,12 @@
-# My Helsinki City Bike App
+# My Helsinki City Bike Single Page App
 
-Hello and welcome! I am Danilo and this is the README for my solution of [Solita's pre-assignment](https://github.com/solita/dev-academy-2023-exercise "Go to repo") for the Dev Academy 2023.
+Greetings and welcome! This is my solution for [Solita's pre-assignment](https://github.com/solita/dev-academy-2023-exercise "Go to repo") for the Dev Academy 2023. My name is Danilo and I am thrilled to present my work.
+
+Before diving into the code, I would like to express my gratitude to my colleague Iuliia Chipsanova for sharing her coding knowledge with me throughout the past year at Grit:Lab. I would also like to thank my boyfriend Jan Korte for his patience and valuable inputs on this project, despite hearing about "the bikes" every day.
+
+Creating this app has been a challenging month-long journey, and I am proud and excited to finally share the result with you. Throughout the process, I worked on it almost every day, updating both this GitHub repository and my [Trello dashboard](https://trello.com/invite/b/ZfZX3lh6/ATTIb4a6f262644d2a35c64ed7feeab6aaa76E194307/tasks).
+
+Now, let's take a closer look at the code!
 
 ## Table of Contents
 
@@ -9,6 +15,9 @@ Hello and welcome! I am Danilo and this is the README for my solution of [Solita
 3. [Data Import](#data-import)
 4. [Running the App](#running-the-app)
 5. [Stations](#stations)
+   1) [Stations list](#stations-list)
+   2) [Single station view](#single-station-view)
+   3) [Add station](#add-station)
 6. [Journeys](#journeys)
 7. [Testing](#testing)
 8. [Contributing](#contributing)
@@ -39,7 +48,7 @@ To import the data, run the following script from the root directory:
 ./database/dbcreate.sh
 ```
 
-This will create the database for the application and download the data from the CSV files. The data will be saved to `hsk-city-bike-app.db`. During the import process:
+This command will create the database for the application and download the datasets of Journeys and Stations provided in the pre-assignment. The resulting data will be saved to hsk-city-bike-app.db. During the import process:
 
 - Bike journeys that lasted less than 10 seconds and covered distances shorter than 10m have been removed;
 - The number of journeys that started and ended from each station has been counted; and
@@ -61,25 +70,79 @@ Then, access the application by opening the following link in your browser:
 http://localhost:8080/
 ```
 
+The following endpoints are implemented:  
+
+``/index``  
+Serves the index.html file
+
+``/``  
+Permanently redirects to /index and includes error handling for non-existent paths
+
+``/stations``  
+API handling with the option to include ?id=STATION_ID
+
+``/journeys``  
+API handling with the option to include ?lastJourneyId=JOURNEY_ID
+
+``/addstation``  
+Accepts POST requests to add new stations to the database.
+
+For all the endpoint handling, please refer to the ``handlers`` directory.  
+To access the database handling code, navigate to the ``database`` directory and open the files ``db.go`` and ``dbcreate.sh``.
+
 ## Stations
 
-In this section of the page, all bike stations imported to the database can be seen. A scrolling pagination of 20 stations per scrolling has been implemented. Clicking on each station will display the following information:
+This section includes the list of all stations, a view of each individual station, and a form to add a station.
 
-- Station name;
-- Station address;
-- Total number of journeys starting from this station;
-- Total number of journeys ending at this station; and
-- Station location on the map.
+### Stations list
+
+In this section of the page, all bike stations imported and added to the database, and available at ``/stations`` can be seen. A scrolling pagination of 20 stations per scrolling has been implemented. Clicking on each station will display information of the individul station.
+
+To read about the functions that handle the stations list, please refer to the ``getStations`` and ``showAllStations`` functions in ``src/Stations.js``.
+
+### Single station view
+
+When you view a single station, the following information will be retrieved by sending a request to the endpoint ``/stations?id=STATION_ID``:
+
+- Station names in Finnish and Swedish;
+- Station address in Finnish and Swedish;
+- Total number of journeys that start from this station;
+- Total number of journeys that end at this station; and
+- Station location on the map with a popup showing the station's name and bikes capacity.
+
+To learn more about the functions that handle the stations list, please refer to the ``getStationData``, ``showSingleStation``, and ``renderMap`` functions in ``src/Stations.js``.
+
+Please note that in order to display the maps properly, you will need to insert the Mapbox API key that has been provided in the application in the ``renderMap`` function. If you encounter any issues, please do not hesitate to contact me via phone or email, both of which can be found within the application.
+
+### Add Station
+
+In this subsection, you can add a new station using the provided form. The fields that need to be filled out include:
+
+- ID: The number of the station. Please note that there is no discernible pattern to the station IDs in the stations dataset, so the user must input a number.
+- Station Names: The station name should be provided in Finnish, Swedish, and English.
+- Addresses: The address should be provided in Finnish and English.
+- Operator (Optional): Operator (Optional): While the dataset only includes "CityBike Finland" or no operator at all, users can choose to leave this field empty or enter an operator of their choice.
+- Capacity: The capacity field has a maximum value of 44, which is based on the largest capacity present in the dataset.
+- Count of journeys that originated from this station
+- Count of journeys that ended at this station.
+
+The last two fields were included because even if a station has not been added to the system, the company may have this information and give it to the user.
+
+The form will be validaded and, if the validation succeeds, a new station will be added in the database. The station will be automatically rendered in the Single station view subsection.
+
+To view how this section is implemented, please refer to the functions in ``src/AddStation.js``.
+
+Note: The fields for city names ("Kaupunki" in Finnish and "Stad" in Swedish), x (Latitude), and y (Longitude) in the database will be populated automatically once the addresses are validated through a Google Cloud API request. To ensure that these requests are successful, please insert the API KEY provided in the application into the ``validateAddresses`` function located in ``src/AddStation.js``. If you encounter any issues, please do not hesitate to contact me.
 
 ## Journeys
 
 Here, you can look at all journeys from the database. Since there's a lot of data, I chose to import batches of 3000 journeys and then a scrolling pagination of 50 journeys per scrolling. In the table of this section, the following information can be seen:
 
-- Departure (date and time)
-- From (departure station)
-- To (return station)
-- Distance (in km)
-- Duration (of the journey, in hours, minutes and seconds)
+- Departure (date and time);
+- From (departure station);
+- To (return station);
+- Distance (in km); and
+- Duration (of the journey, in hours, minutes and seconds).
 
 ## Testing
 
@@ -104,7 +167,7 @@ Imports data from multiple CSV files into a SQLite database table, verifies that
 Checks if there are any rows in a specified database table with covered distance or duration less than 10 (meters or seconds).
 
 ``apis_test.go``  
-Checks the availability of the localhost at http://localhost:8080/ and runs three tests on the bike sharing app API that returns station information: TestGetInvalidStationID, TestGetNonExistingStation, and TestGetValidStationInfo
+Checks the availability of the localhost at ``http://localhost:8080/`` and runs three tests on the bike sharing app API that returns station information: ``TestGetInvalidStationID``, ``TestGetNonExistingStation``, and ``TestGetValidStationInfo``.
 
 ### Cypress E2E tests
 
