@@ -20,7 +20,8 @@ Now, let's take a closer look at the code!
    3) [Add station](#add-station)
 6. [Journeys](#journeys)
 7. [Testing](#testing)
-8. [Contributing](#contributing)
+8. [Cloud-based Backend](#cloud-based-backend)
+9. [Contributing](#contributing)
 
 ## Introduction
 
@@ -185,6 +186,8 @@ Ensures journey details in the web app match the API data by visiting the page, 
 ``stations.cy.js``  
 The first test on this file clicks on a station in a list, waits for the station details to be loaded, makes a request to the detail page API, and asserts that the details of the clicked station match the API data. The second test scrolls down a list of stations and verifies that 20 more station names are added per scroll.
 
+## Cloud-based Backend
+The backend of this application has been migrated to the cloud using Amazon Web Services (AWS). To enable this, I created a separate repository for the cloud implementation, which can be found [here](https://github.com/danilocangucu/hsk-bikeapp-solita-cloud).
 
 ## Contributing
 
