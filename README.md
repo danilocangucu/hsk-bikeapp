@@ -4,7 +4,7 @@ Greetings and welcome! This is my solution for [Solita's pre-assignment](https:/
 
 Before diving into the code, I would like to express my gratitude to my colleague Iuliia Chipsanova for sharing her coding knowledge with me throughout the past year at Grit:Lab. I would also like to thank my boyfriend Jan Korte for his patience and valuable inputs on this project, despite hearing about "the bikes" every day.
 
-Creating this app has been a challenging month-long journey, and I am proud and excited to finally share the result with you. Throughout the process, I worked on it almost every day, updating both this GitHub repository and my [Trello dashboard](https://trello.com/invite/b/ZfZX3lh6/ATTIb4a6f262644d2a35c64ed7feeab6aaa76E194307/tasks).
+Creating this app has been a challenging month-long journey, and I am proud and excited to finally share the result with you. Throughout the process, I worked on it almost every day, updating both this GitHub repository and my [Trello dashboard](https://trello.com/b/ZfZX3lh6/tasks).
 
 Now, let's take a closer look at the code!
 
@@ -20,8 +20,9 @@ Now, let's take a closer look at the code!
    3) [Add station](#add-station)
 6. [Journeys](#journeys)
 7. [Testing](#testing)
-8. [Cloud-based Backend](#cloud-based-backend)
-9. [Contributing](#contributing)
+8. [Running the application in Docker](#running-the-application-in-docker)
+9. [Cloud-based Backend](#cloud-based-backend)
+10. [Contributing](#contributing)
 
 ## Introduction
 
@@ -65,11 +66,7 @@ To start the server, run the following command from the root directory:
 go run main.go
 ```
 
-Then, access the application by opening the following link in your browser:
-
-```
-http://localhost:8080/
-```
+Then, open the application by accessing http://localhost:8080/ in your browser.
 
 The following endpoints are implemented:  
 
@@ -149,10 +146,10 @@ Here, you can look at all journeys from the database. Since there's a lot of dat
 
 ### Golang unit tests
 
-To run the tests located in the ``test`` directory of the root directory in verbose mode, use the following command:
+To run the tests located in the ``tests`` directory of the root directory in verbose mode, use the following command:
 
 ```
-go test -v ./test
+go test -v ./tests
 ```
 
 ``handle_indexget_test.go``  
@@ -168,7 +165,7 @@ Imports data from multiple CSV files into a SQLite database table, verifies that
 Checks if there are any rows in a specified database table with covered distance or duration less than 10 (meters or seconds).
 
 ``apis_test.go``  
-Checks the availability of the localhost at ``http://localhost:8080/`` and runs three tests on the bike sharing app API that returns station information: ``TestGetInvalidStationID``, ``TestGetNonExistingStation``, and ``TestGetValidStationInfo``.
+Checks the availability of the localhost at ``http://localhost:8080/`` and runs three tests on the bike sharing app API that returns station information: ``TestGetInvalidStationID``, ``TestGetNonExistingStation``, and ``TestGetValidStationInfo``. These tests are available only on Mac and Windows platforms.
 
 ### Cypress E2E tests
 
@@ -185,6 +182,20 @@ Ensures journey details in the web app match the API data by visiting the page, 
 
 ``stations.cy.js``  
 The first test on this file clicks on a station in a list, waits for the station details to be loaded, makes a request to the detail page API, and asserts that the details of the clicked station match the API data. The second test scrolls down a list of stations and verifies that 20 more station names are added per scroll.
+
+## Running the application in Docker
+A Dockerfile is included in the project and you can dockerize this application. To build the Docker image, execute the following command from the primary directory:
+```
+docker build -t hsk-bikeapp-solita .
+```
+
+After building the Docker image, you can run the application using the following command:
+
+```
+docker run -p 8080:8080 hsk-bikeapp-solita
+```
+
+When the application is running, you can access it by navigating to http://localhost:8080 in our web browser.
 
 ## Cloud-based Backend
 The backend of this application has been migrated to the cloud using Amazon Web Services (AWS). To enable this, I created a separate repository for the cloud implementation, which can be found [here](https://github.com/danilocangucu/hsk-bikeapp-solita-cloud).
