@@ -8,12 +8,15 @@ DATASET_4="726277c507ef4914b0aec3cbcfcbfafc_0.csv"
 DB_NAME="database/hsk-city-bike-app.db"
 ALL_JOURNEYS="all_journeys"
 
+if [ -f "$DB_NAME" ]; then
+  rm -vf "$DB_NAME"
+fi
+
 mkdir -p datasets
 
 for JOURNEYS_DATASETS in $DATASET_1 $DATASET_2 $DATASET_3; do
 # Delete CSV files of journeys if they exist & download their newest version
 if [ -f "./datasets/$JOURNEYS_DATASETS" ]; then
-  echo "$JOURNEYS_DATASETS removed"
   rm -vf "./datasets/$JOURNEYS_DATASETS"
 fi
 echo "Downloading $JOURNEYS_DATASETS ..."
@@ -114,8 +117,11 @@ FROM (
   SELECT *
   FROM journeys_202107
 ) t;
+EOF
+echo "data from all journeys imported to $ALL_JOURNEYS in ./$DB_NAME"
 
-SELECT "data from all journeys imported to $ALL_JOURNEYS in ./$DB_NAME";
+sqlite3 $DB_NAME <<EOF
+.mode csv
 
 CREATE TABLE stations (
   "FID" INTEGER,
@@ -134,9 +140,11 @@ CREATE TABLE stations (
 );
 .import ./datasets/$DATASET_4 stations
 DELETE FROM stations WHERE rowid = 1;
+EOF
+echo "data from $DATASET_4 imported to stations table in ./$DB_NAME"
 
-SELECT "data from $DATASET_4 imported to stations table in ./$DB_NAME";
-
+echo "adding columns JourneysFrom and JourneysTo into stations table, please wait..."
+sqlite3 $DB_NAME <<EOF
 ALTER TABLE stations ADD COLUMN JourneysFrom INTEGER;
 ALTER TABLE stations ADD COLUMN JourneysTo INTEGER;
 UPDATE stations
@@ -151,6 +159,7 @@ JourneysTo = (
     WHERE $ALL_JOURNEYS."Return station id" = stations.ID
 );
 
-SELECT "data created JourneysFrom and JourneysTo at stations table in ./$DB_NAME";
-.save $DB_NAME
 EOF
+echo "created columns JourneysFrom and JourneysTo at stations table in ./$DB_NAME"
+
+echo "database is ready to be used!"
