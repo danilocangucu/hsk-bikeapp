@@ -17,12 +17,14 @@ Now, let's take a closer look at the code!
 5. [Stations](#stations)
    1) [Stations list](#stations-list)
    2) [Single station view](#single-station-view)
-   3) [Add station](#add-station)
+   3) [Add a station](#add-a-station)
 6. [Journeys](#journeys)
 7. [Testing](#testing)
-8. [Running the application in Docker](#running-the-application-in-docker)
-9. [Cloud-based Backend](#cloud-based-backend)
-10. [Contributing](#contributing)
+   1) [Golang unit tests](#golang-unit-tests)
+   2) [Cypress E2E tests](#cypress-e2e-tests)
+9. [Running the application in Docker](#running-the-application-in-docker)
+10. [Cloud-based Backend](#cloud-based-backend)
+11. [Contributing](#contributing)
 
 ## Introduction
 
@@ -31,20 +33,33 @@ This is a Helsinki city bike app that displays information about bike stations a
 ## Getting Started
 
 To get started with this project, you will need to have the following installed on your computer:
+- [wget command](https://www.gnu.org/software/wget/)
+- [SQLite3](https://www.sqlite.org/index.html)
 - [Go](https://golang.org/)
   - [goquery package](https://github.com/PuerkitoBio/goquery)
 - JavaScript (most likely your browser has it, if not, check the [JS documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript) for help)
   - [Mapbox GL JS library](https://docs.mapbox.com/mapbox-gl-js/api/)
   - [Cypress](https://docs.cypress.io/guides/overview/why-cypress)
-- [SQLite3](https://www.sqlite.org/index.html)
-- [wget command](https://www.gnu.org/software/wget/)
-- Internet connection
+- [Docker](https://www.docker.com/)
+
+If you are using Windows:
+- [Git Bash](https://gitforwindows.org/)
+- [Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 Once you have these technologies installed, clone this repository to your IDE.
 
+Insert the following from my application's documents:
+- Mapbox API Key to file src/Stations.js, line 100
+- Google Cloud API Key to file src/AddStation.js, line 149
+- Video.mp4 to src/
+
+If you encounter any issues, please do not hesitate to contact me via phone or email, both of which can be found within the application.
+
 ## Data Import
 
-To import the data, run the following script from the root directory:
+To import the data, run the following script from the root directory with the command below.
+
+Note: If you are using Windows, please run the command in Git Bash.
 
 ```
 ./database/dbcreate.sh
@@ -71,16 +86,22 @@ Then, open the application by accessing http://localhost:8080/ in your browser.
 The following endpoints are implemented:  
 
 ``/index``  
-Serves the index.html file
+Serves the index.html file.
 
 ``/``  
-Permanently redirects to /index and includes error handling for non-existent paths
+Permanently redirects to /index and includes error handling for non-existent paths.
 
 ``/stations``  
-API handling with the option to include ?id=STATION_ID
+API handling with the option to include the query parameter "id".
+
+   /stations?id=STATION_ID
+   The STATION_ID must be an integer between 1 and 405. If new stations are added, the allowed id will increase.
 
 ``/journeys``  
-API handling with the option to include ?lastJourneyId=JOURNEY_ID
+API handling with the option to include the query parameter "batchfromid".
+
+   /journeys?batchfromid=JOURNEY_ID
+   The JOURNEY_ID must be an integer between 1 and 1500580. A batch of maximum 3000 journeys starting from the JOURNEY_ID will be returned.
 
 ``/addstation``  
 Accepts POST requests to add new stations to the database.
@@ -94,13 +115,13 @@ This section includes the list of all stations, a view of each individual statio
 
 ### Stations list
 
-In this section of the page, all bike stations imported and added to the database, and available at ``/stations`` can be seen. A scrolling pagination of 20 stations per scrolling has been implemented. Clicking on each station will display information of the individul station.
+In this subsection of the page, all bike stations imported and added to the database, and available at ``/stations`` can be seen. A scrolling pagination of 20 stations per scrolling has been implemented. Clicking on each station will display information of the individul station.
 
-To read about the functions that handle the stations list, please refer to the ``getStations`` and ``showAllStations`` functions in ``src/Stations.js``.
+To read about the functions that handle the stations list, please refer to the ``getStations`` and ``showAllStations`` functions in ``src/Stations.js`` and ``handlers/stations.go``.
 
 ### Single station view
 
-When you view a single station, the following information will be retrieved by sending a request to the endpoint ``/stations?id=STATION_ID``:
+When you view a single station, the following information will be retrieved by sending a GET request to the endpoint ``/stations?id=STATION_ID``:
 
 - Station names in Finnish and Swedish;
 - Station address in Finnish and Swedish;
@@ -108,37 +129,38 @@ When you view a single station, the following information will be retrieved by s
 - Total number of journeys that end at this station; and
 - Station location on the map with a popup showing the station's name and bikes capacity.
 
-To learn more about the functions that handle the stations list, please refer to the ``getStationData``, ``showSingleStation``, and ``renderMap`` functions in ``src/Stations.js``.
+To learn more about the functions that handle the stations list, please refer to the ``getStationData``, ``showSingleStation``, and ``renderMap`` functions in ``src/Stations.js`` and ``handlers/addstation.go``.
 
-Please note that in order to display the maps properly, you will need to insert the Mapbox API key that has been provided in the application in the ``renderMap`` function. If you encounter any issues, please do not hesitate to contact me via phone or email, both of which can be found within the application.
+Please note that in order to display the maps properly, you will need to insert the Mapbox API key that has been provided in the application in the ``renderMap`` function in ``src/Stations.js``, line 100.
 
-### Add Station
+### Add a station
 
 In this subsection, you can add a new station using the provided form. The fields that need to be filled out include:
 
-- ID: The number of the station. Please note that there is no discernible pattern to the station IDs in the stations dataset, so the user must input a number.
-- Station Names: The station name should be provided in Finnish, Swedish, and English.
-- Addresses: The address should be provided in Finnish and English.
-- Operator (Optional): Operator (Optional): While the dataset only includes "CityBike Finland" or no operator at all, users can choose to leave this field empty or enter an operator of their choice.
-- Capacity: The capacity field has a maximum value of 44, which is based on the largest capacity present in the dataset.
-- Count of journeys that originated from this station
+- Station Names: The station name should be provided in Finnish, Swedish, and English;
+- Addresses: The address should be provided in Finnish and English;
+- Operator (Optional): While the dataset only includes "CityBike Finland" or no operator at all, users can choose to leave this field empty or enter an operator of their choice;
+- Capacity: The capacity field has a maximum value of 44, which is based on the largest capacity present in the dataset;
+- Count of journeys that originated from this station;
 - Count of journeys that ended at this station.
 
 The last two fields were included because even if a station has not been added to the system, the company may have this information and give it to the user.
 
 The form will be validaded and, if the validation succeeds, a new station will be added in the database. The station will be automatically rendered in the Single station view subsection.
 
-To view how this section is implemented, please refer to the functions in ``src/AddStation.js``.
+Notes:
+1. The fields for city names ("Kaupunki" in Finnish and "Stad" in Swedish), x (Latitude), and y (Longitude) in the database will be populated automatically once the addresses are validated through a Google Cloud API request. To ensure that these requests are successful, please insert the API KEY provided in the application into the ``validateAddresses`` function located in ``src/AddStation.js``, line 149.
+2. The fields "FID" and "ID" will be automatically filled.
 
-Note: The fields for city names ("Kaupunki" in Finnish and "Stad" in Swedish), x (Latitude), and y (Longitude) in the database will be populated automatically once the addresses are validated through a Google Cloud API request. To ensure that these requests are successful, please insert the API KEY provided in the application into the ``validateAddresses`` function located in ``src/AddStation.js``. If you encounter any issues, please do not hesitate to contact me.
+To view how this section is implemented, please refer to the functions in ``src/AddStation.js`` and ``handlers/addstation.go``.
 
 ## Journeys
 
 Here, you can look at all journeys from the database. Since there's a lot of data, I chose to import batches of 3000 journeys and then a scrolling pagination of 50 journeys per scrolling. In the table of this section, the following information can be seen:
 
 - Departure (date and time);
-- From (departure station);
-- To (return station);
+- From (Finnish name of departure station);
+- To (Finnish name of return station);
 - Distance (in km); and
 - Duration (of the journey, in hours, minutes and seconds).
 
@@ -152,28 +174,38 @@ To run the tests located in the ``tests`` directory of the root directory in ver
 go test -v ./tests
 ```
 
+The following tests will be performed:
+
 ``handle_indexget_test.go``  
 Tests an HTTP server's response to a GET request by verifying the presence of specific HTML elements and assets in the response body.
 
 ``dbstations_test.go``  
-Imports station data from a CSV file into a SQLite database, creates a table for the data, inserts the data into the table, and verifies that the data was inserted correctly by checking the number of rows in the table and comparing it with the number of records in the CSV file.
+Imports station data from a CSV file, ``/datasets/726277c507ef4914b0aec3cbcfcbfafc_0.csv``, into a SQLite database, creates a table for the data, inserts the data into the table, and verifies that the data was inserted correctly by checking the number of rows in the table and comparing it with the number of records in the CSV file.
 
 ``dbimportjourneys_test.go``  
-Imports data from multiple CSV files into a SQLite database table, verifies that the table exists or creates it if necessary, inserts the data into a temporary table, and checks if the imported data matches the raw data.
+Imports data from multiple CSV files in ``/datasets`` (2021-05.csv, 2021-06.csv, 2021-07.csv) into a SQLite database table, verifies that the table exists or creates it if necessary, inserts the data into a temporary table, and checks if the imported data matches the raw data.
 
 ``dbshortjourneys_test.go``  
-Checks if there are any rows in a specified database table with covered distance or duration less than 10 (meters or seconds).
+Checks if there are any rows in ``/database/hsk-city-bike-app.db`` with covered distance or duration less than 10 (meters or seconds).
 
 ``apis_test.go``  
 Checks the availability of the localhost at ``http://localhost:8080/`` and runs three tests on the bike sharing app API that returns station information: ``TestGetInvalidStationID``, ``TestGetNonExistingStation``, and ``TestGetValidStationInfo``. These tests are available only on Mac and Windows platforms.
 
 ### Cypress E2E tests
 
-Cypress tests are located in ``cypress/e2e`` directory. To run them, execute the command:
+Cypress tests are located in ``cypress/e2e`` directory. To run these tests, you will need two terminal windows. You should run the server in one terminal and the following command in the other, from the project's root directory.
+
+If you're using an unix-based OS:
 
 ```
 node_modules/.bin/cypress open
 ```
+
+If you're using Windows:
+```
+npx cypress open
+```
+
 
 The Cypress UI will open. Select ``E2E Testing``, choose your browser and click on  ``Start E2E Testing``.  A new window will be opened. Under the "Specs" sections there are two test files:
 
@@ -183,8 +215,12 @@ Ensures journey details in the web app match the API data by visiting the page, 
 ``stations.cy.js``  
 The first test on this file clicks on a station in a list, waits for the station details to be loaded, makes a request to the detail page API, and asserts that the details of the clicked station match the API data. The second test scrolls down a list of stations and verifies that 20 more station names are added per scroll.
 
+To run the the tests, click on the previous files in the "Sepcs" section in Cypress UI.
+
 ## Running the application in Docker
-A Dockerfile is included in the project and you can dockerize this application. To build the Docker image, execute the following command from the primary directory:
+A Dockerfile is included in the project and you can dockerize this application.
+
+First open Docker in your computer. Then, to build the Docker image, execute the following command from the primary directory of this project:
 ```
 docker build -t hsk-bikeapp-solita .
 ```
