@@ -8,10 +8,12 @@ export const getStations = () => {
     .then((response) => response.json())
     .then((stations) => {
         showAllStations(stations)
+        console.log(stations)
     })
 }
 
 const showAllStations = (stations) => {
+  stationsList.innerHTML = ""
   const itemsPerPage = 20;
   let currentPage = 1;
 
@@ -25,8 +27,12 @@ const showAllStations = (stations) => {
       stationDiv.innerHTML = `${station.Nimi}<br>${station.Namn}`;
       stationDiv.id = station.ID;
       stationDiv.className = "station-names";
+      stationDiv.tabIndex = -1;
       stationDiv.addEventListener("click", () => {
+        disableScroll()
         showSingleStation({detail: {id: station.ID}});
+        setTimeout(() => { enableScroll() }, 200);
+
       });
       return stationDiv;
     });
@@ -34,7 +40,9 @@ const showAllStations = (stations) => {
     stationsList.append(...stationElements);
 
     if (currentPage === 1 && startIndex === 0) {
+      disableScroll()
       showSingleStation({detail: {id: stations[0].ID}});
+      setTimeout(() => {enableScroll()}, 200);
     }
   };
 
@@ -67,7 +75,9 @@ const getStationData = async (id) => {
 };
 
 const showSingleStation = async (event) => {
+
   try {
+
     const stationData = await getStationData(event.detail.id);
     stationDetails.innerHTML = "";
 
@@ -87,6 +97,8 @@ const showSingleStation = async (event) => {
         element.classList.remove("selected");
       }
     });
+
+
   } catch (error) {
     console.error("Error showing single station:", error);
   }
@@ -152,3 +164,20 @@ mediaQuery.addEventListener("change", (event) => {
     stationsList.removeEventListener("wheel", handleWheelEvent);
   }
 });
+
+// dont scroll
+function disableScroll() {
+  if (document.documentElement.scrollHeight > window.innerHeight) {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    document.documentElement.style.top = `-${scrollTop}px`;
+    document.documentElement.classList.add("noscroll");
+  }
+}
+
+function enableScroll() {
+  const scrollTop = -parseInt(document.documentElement.style.top);
+  document.documentElement.classList.remove("noscroll");
+  document.documentElement.style.top = "";
+  document.documentElement.scrollTop = scrollTop;
+  document.body.scrollTop = scrollTop;
+}

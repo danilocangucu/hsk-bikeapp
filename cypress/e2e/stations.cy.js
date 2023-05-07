@@ -21,22 +21,22 @@ describe("Stations details display test", () => {
                 .its("body")
                 .then((stationData) => {
                   expect(detailsText).to.contain(
-                    stationData[0].Nimi
+                    stationData.Nimi
                   );
                   expect(detailsText).to.contain(
-                    stationData[0].Namn
+                    stationData.Namn
                   );
                   expect(detailsText).to.contain(
-                    stationData[0].Osoite
+                    stationData.Osoite
                   );
                   expect(detailsText).to.contain(
-                    stationData[0].Adress
+                    stationData.Adress
                   );
                   expect(detailsText).to.contain(
-                    stationData[0].JourneysFrom
+                    stationData.JourneysFrom
                   );
                   expect(detailsText).to.contain(
-                    stationData[0].JourneysTo
+                    stationData.JourneysTo
                   );
 
                 });

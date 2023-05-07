@@ -24,6 +24,10 @@ export const addStation = () => {
 
     const result = await validateNewStation(newStation);
 
+    addStationResponse.innerHTML = ""
+    let responseDiv = document.createElement("div")
+    addStationResponse.appendChild(responseDiv)
+
     if (result.isValid) {
       fetch("/addstation", {
         method: "POST",
@@ -42,7 +46,8 @@ export const addStation = () => {
         .then((data) => {
           if (data) {
             if (data.message) {
-              addStationResponse.textContent = data.message;
+              // validation succeed
+              responseDiv.innerHTML = data.message;
               form.reset();
               getStations();
             } else {
@@ -53,7 +58,7 @@ export const addStation = () => {
                   for (let i = 0; i < data[key].length; i++) {
                     responseHTML += `${data[key][i]}<br>`;
                   }
-                  addStationResponse.innerHTML = responseHTML;
+                  responseDiv.innerHTML = responseHTML;
                   break;
                 }
               }
@@ -61,23 +66,20 @@ export const addStation = () => {
           }
         })
         .catch((error) => {
-          addStationResponse.textContent =
+          responseDiv.textContent =
             "Sorry! An error occurred while adding the new station.";
           console.error(error);
         });
     } else {
-      addStationResponse.innerHTML = ""
-      let errorText = document.createElement("div")
-      addStationResponse.appendChild(errorText)
       // validation failed
       result.errors.forEach(
         errorArray => {
           if (errorArray.length > 1) {
             errorArray.forEach(
-              error => errorText.innerHTML += `${error}<br>`
+              error => responseDiv.innerHTML += `${error}<br>`
             );
           } else {
-            errorText.innerHTML += `${errorArray}<br>`;
+            responseDiv.innerHTML += `${errorArray}<br>`;
           }
         }
       );
@@ -151,28 +153,29 @@ const validateAddresses = async (adress, osoite) => {
 
   const addressesPromises = addresses.map((address) => {
     const url = `${apiUrl}?address=${encodeURIComponent(
-      address
-    )}&key=${apiKey}`;
+      address+", Helsinki, Finland"
+    )}&key=${apiKey}&components=administrative_area:"Helsinki"&language=sv`;
     return fetch(url)
       .then((response) => response.json())
       .then((data) => {
         let latitude = undefined;
         let longitude = undefined;
-        if (data.results && data.results.length > 0) {
+        console.log(data.results)
+        if (!(data.results[0].formatted_address == "Helsingfors, Finland")) {
           const addressComponents = data.results[0].address_components;
           const city = addressComponents.find((component) =>
             component.types.includes("locality")
           );
           if (
             city &&
-            (city.long_name === "Helsinki" || city.long_name === "Espoo")
+            (city.long_name === "Helsingfors" || city.long_name === "Esbo")
           ) {
             latitude = data.results[0].geometry.location.lat;
             longitude = data.results[0].geometry.location.lng;
             return {
               isValid: true,
-              Kaupunki: city.long_name,
-              Stad: city.long_name === "Helsinki" ? "Helsingfors" : "Esbo",
+              Kaupunki: city.long_name === "Helsingfors" ? "Helsinki" : "Espo",
+              Stad: city.long_name,
               Latitude: latitude,
               Longitude: longitude,
             };
