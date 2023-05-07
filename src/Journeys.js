@@ -1,9 +1,9 @@
 let journeysList = document.getElementById('journeys-list')
+let journeysText = document.getElementById('journeys-text')
+
 let batchFromId = 1
 let currentPage = 0
 let fetchingPreviousBatch = false
-
-const addZero = (num) => num < 10 ? `0${num}` : num
 
 export const getJourneys = () => {
     fetch(`/journeys?batchfromid=${batchFromId}`)
@@ -36,10 +36,15 @@ tableHeader.appendChild(headerRow);
 journeysTable.appendChild(tableHeader);
 journeysList.appendChild(journeysTable)
 
+let journeysCount = 0
+
 const showJourneysBatch = (journeys, page) => {
     const start = page * 50;
     const end = start + 50;
     const journeysSlice = journeys.slice(start, end)
+    journeysCount += 50
+
+    journeysText.innerText = `Natigate through ${journeysCount}+ journeys`
 
     journeysSlice.forEach(journey => {
         let hours = 0
@@ -88,7 +93,7 @@ const showJourneysBatch = (journeys, page) => {
             if (scrollTop + clientHeight >= scrollHeight/40) {
                 hasReachedEnd = true;
                 if (pageCount == currentPage+1) {
-                    batchFromId += 3000;
+                    batchFromId += 500;
                     getJourneys();
                 } else {
                     showJourneysBatch(journeys, currentPage + 1)
@@ -100,3 +105,5 @@ const showJourneysBatch = (journeys, page) => {
         journeysList.addEventListener('scroll', handleScroll);
     }
 };
+
+const addZero = (num) => num < 10 ? `0${num}` : num

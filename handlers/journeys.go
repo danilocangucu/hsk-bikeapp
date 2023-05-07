@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	db "hsk-bikeapp-solita/database"
 	"log"
 	"net/http"
@@ -45,15 +44,16 @@ func JourneysGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filter.Limit = 3000
+	filter.Limit = 500
 	remainingIds := lastJourneyId - filter.Limit
-	if remainingIds < 3000 {
+	if remainingIds < 500 {
 		filter.Limit = remainingIds
 	}
 
 	journeys, err := DB.GetJourneys(filter)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Could not retreive journeys data:", err)
+		http.Error(w, "Could not retreive journeys data", http.StatusBadRequest)
 	}
 
 	w.Header().Set("Content-Type", "application/json")

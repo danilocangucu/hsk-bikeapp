@@ -1,5 +1,6 @@
 let stationsList = document.getElementById('stations-list')
 let stationDetails = document.getElementById('station-details-text')
+let stationsText = document.getElementById('stations-text')
 
 // Stations list
 
@@ -8,11 +9,11 @@ export const getStations = () => {
     .then((response) => response.json())
     .then((stations) => {
         showAllStations(stations)
-        console.log(stations)
     })
 }
 
 const showAllStations = (stations) => {
+  stationsText.innerText = `Ride through ${stations.length} bike stations`
   stationsList.innerHTML = ""
   const itemsPerPage = 20;
   let currentPage = 1;
@@ -27,12 +28,10 @@ const showAllStations = (stations) => {
       stationDiv.innerHTML = `${station.Nimi}<br>${station.Namn}`;
       stationDiv.id = station.ID;
       stationDiv.className = "station-names";
-      stationDiv.tabIndex = -1;
       stationDiv.addEventListener("click", () => {
         disableScroll()
         showSingleStation({detail: {id: station.ID}});
         setTimeout(() => { enableScroll() }, 200);
-
       });
       return stationDiv;
     });
