@@ -108,7 +108,7 @@ const renderMap = async (stationData) => {
     const { Latitude: latitude, Longitude: longitude } = stationData;
 
     mapboxgl.accessToken =
-      "INSERT_MAPBOX_API_KEY_HERE";
+      "INSERT_MAPBOX_API_KEY";
     const mapElement = document.getElementById("station-details-map");
     const map = new mapboxgl.Map({
       container: mapElement,

@@ -48,9 +48,9 @@ If you are using Windows:
 
 Once you have these technologies installed, clone this repository to your IDE.
 
-Insert the following from my application's documents:
-- Mapbox API Key to file src/Stations.js, line 100
-- Google Cloud API Key to file src/AddStation.js, line 149
+Insert the following from the second page of my cover letter document:
+- Mapbox API Key to file src/Stations.js, line 111
+- Google Cloud API Key to file src/AddStation.js, line 151
 - Video.mp4 to src/
 
 If you encounter any issues, please do not hesitate to contact me via phone or email, both of which can be found within the application.
@@ -131,7 +131,7 @@ When you view a single station, the following information will be retrieved by s
 
 To learn more about the functions that handle the stations list, please refer to the ``getStationData``, ``showSingleStation``, and ``renderMap`` functions in ``src/Stations.js`` and ``handlers/addstation.go``.
 
-Please note that in order to display the maps properly, you will need to insert the Mapbox API key that has been provided in the application in the ``renderMap`` function in ``src/Stations.js``, line 100.
+Please note that in order to display the maps properly, you will need to insert the Mapbox API key that has been provided in the application in the ``renderMap`` function in ``src/Stations.js``, line 111.
 
 ### Add a station
 
@@ -149,7 +149,7 @@ The last two fields were included because even if a station has not been added t
 The form will be validaded and, if the validation succeeds, a new station will be added in the database. The station will be automatically rendered in the Single station view subsection.
 
 Notes:
-1. The fields for city names ("Kaupunki" in Finnish and "Stad" in Swedish), x (Latitude), and y (Longitude) in the database will be populated automatically once the addresses are validated through a Google Cloud API request. To ensure that these requests are successful, please insert the API KEY provided in the application into the ``validateAddresses`` function located in ``src/AddStation.js``, line 149.
+1. The fields for city names ("Kaupunki" in Finnish and "Stad" in Swedish), x (Latitude), and y (Longitude) in the database will be populated automatically once the addresses are validated through a Google Cloud API request. To ensure that these requests are successful, please insert the API KEY provided in the application into the ``validateAddresses`` function located in ``src/AddStation.js``, line 151.
 2. The fields "FID" and "ID" will be automatically filled.
 
 To view how this section is implemented, please refer to the functions in ``src/AddStation.js`` and ``handlers/addstation.go``.

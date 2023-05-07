@@ -148,7 +148,7 @@ const validateAddresses = async (adress, osoite) => {
   }
 
   const addresses = [osoite, adress];
-  const apiKey = "AIzaSyBXa2e86FVa--L8YfZeMgc0mGO74z3Skn0";
+  const apiKey = "INSERT_GOOGLE_CLOUD_API_KEY";
   const apiUrl = "https://maps.googleapis.com/maps/api/geocode/json";
 
   const addressesPromises = addresses.map((address) => {
