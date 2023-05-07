@@ -1,12 +1,12 @@
 let journeysList = document.getElementById('journeys-list')
-let journeyBatch = 0
+let batchFromId = 1
 let currentPage = 0
 let fetchingPreviousBatch = false
 
 const addZero = (num) => num < 10 ? `0${num}` : num
 
 export const getJourneys = () => {
-    fetch(`/journeys?lastJourneyId=${journeyBatch}`)
+    fetch(`/journeys?batchfromid=${batchFromId}`)
     .then((response) => response.json())
     .then((journeys) => {
         if (fetchingPreviousBatch){
@@ -88,7 +88,7 @@ const showJourneysBatch = (journeys, page) => {
             if (scrollTop + clientHeight >= scrollHeight/40) {
                 hasReachedEnd = true;
                 if (pageCount == currentPage+1) {
-                    journeyBatch += 3000;
+                    batchFromId += 3000;
                     getJourneys();
                 } else {
                     showJourneysBatch(journeys, currentPage + 1)

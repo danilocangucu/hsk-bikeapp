@@ -11,7 +11,7 @@ describe("Stations details display test", () => {
       cy.wrap($div)
         .click()
         .then(() => {
-          cy.wait(1000);
+          cy.wait(1500);
 
           cy.get("#station-details-text")
             .invoke("text")

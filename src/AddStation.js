@@ -66,9 +66,20 @@ export const addStation = () => {
           console.error(error);
         });
     } else {
+      addStationResponse.innerHTML = ""
+      let errorText = document.createElement("div")
+      addStationResponse.appendChild(errorText)
       // validation failed
       result.errors.forEach(
-        (error) => (addStationResponse.innerHTML += `${error}<br>`)
+        errorArray => {
+          if (errorArray.length > 1) {
+            errorArray.forEach(
+              error => errorText.innerHTML += `${error}<br>`
+            );
+          } else {
+            errorText.innerHTML += `${errorArray}<br>`;
+          }
+        }
       );
     }
   });
@@ -135,7 +146,7 @@ const validateAddresses = async (adress, osoite) => {
   }
 
   const addresses = [osoite, adress];
-  const apiKey = "INSERT_GOOGLE_API_KEY_HERE";
+  const apiKey = "AIzaSyBXa2e86FVa--L8YfZeMgc0mGO74z3Skn0";
   const apiUrl = "https://maps.googleapis.com/maps/api/geocode/json";
 
   const addressesPromises = addresses.map((address) => {
@@ -168,7 +179,7 @@ const validateAddresses = async (adress, osoite) => {
           } else {
             return {
               isValid: false,
-              error: [`The city for address ${address} is not valid.`],
+              error: [`The address ${address} is not in Helsinki or Espoo.`],
             };
           }
         } else {
@@ -231,13 +242,13 @@ const validateNames = (nimi, namn, name) => {
   } else {
     const namesErrors = [];
     if (!isNimiValid) {
-      namesErrors.push("Nimi is not valid.");
+      namesErrors.push("Finnish name is not valid.");
     }
     if (!isNamnValid) {
-      namesErrors.push("Namn is not valid.");
+      namesErrors.push("Swedish name is not valid.");
     }
     if (!isNameValid) {
-      namesErrors.push("Name is not valid.");
+      namesErrors.push("English name is not valid.");
     }
     if (!areNamesDifferent) {
       namesErrors.push("Names in Finnish and Swedish must be different.");
@@ -247,8 +258,9 @@ const validateNames = (nimi, namn, name) => {
 };
 
 const validateOperator = (operator) => {
+
   if (operator === ""){
-    return { isValid: false, error: ["Operator is empty."] };
+    return { isValid: true }
   }
   
   const regex = /^[a-zA-Z\s]+$/;
@@ -262,7 +274,7 @@ const validateOperator = (operator) => {
 };
 
 const validateCapacity = (capacity) => {
-  if (isNaN(capacity) || capacity >= 1 || capacity <= 44) {
+  if (isNaN(capacity) || capacity < 1 || capacity > 44) {
     return {
       isValid: false,
       error: ["Capacity must be a number greater than or equal to 1."],
@@ -272,7 +284,7 @@ const validateCapacity = (capacity) => {
 };
 
 const validateJourneysCount = (journeysCount) => {
-  if (isNaN(journeysCount) || journeysCount >= 0) {
+  if (isNaN(journeysCount) || journeysCount < 0) {
     return {
       isValid: false,
       error: ["The counts of journeys must be a number greater than or equal to 0."],

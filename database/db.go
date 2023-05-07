@@ -56,8 +56,8 @@ type StationFilter struct {
 }
 
 type JourneyFilter struct {
-	LastId int
-	Limit  int
+	BatchFromId int
+	Limit       int
 }
 
 func OpenDatabase() (Db, error) {
@@ -76,7 +76,7 @@ func (db *Db) CloseDatabase() {
 func (db *Db) GetAllStations() (stations []Station, err error) {
 	var station Station
 
-	query := "select FID,ID,Nimi,Namn,Name,Osoite,Adress,Kaupunki,Stad,Operaattor,Kapasiteet,x,y,JourneysFrom,JourneysTo from stations"
+	query := "SELECT FID, ID, Nimi, Namn, Name, Osoite, Adress, Kaupunki, Stad, Operaattor, Kapasiteet, x, y, JourneysFrom, JourneysTo FROM stations ORDER BY FID DESC"
 
 	rows, err := db.connection.Query(query)
 	if err != nil {
@@ -209,14 +209,21 @@ func (db *Db) ValidateNewStation(newStation Station) (errors []error) {
 }
 
 func (db *Db) AddNewStation(newStation Station) error {
+	var lastFid int
 	var lastId int
 
-	err := db.connection.QueryRow("SELECT MAX(FID) FROM stations").Scan(&lastId)
+	err := db.connection.QueryRow("SELECT MAX(FID) FROM stations").Scan(&lastFid)
 	if err != nil {
 		return err
 	}
 
-	newStation.FID = lastId + 1
+	err = db.connection.QueryRow("SELECT MAX(ID) FROM stations").Scan(&lastId)
+	if err != nil {
+		return err
+	}
+
+	newStation.FID = lastFid + 1
+	newStation.ID = lastId + 1
 
 	query := `INSERT INTO stations (FID, ID, Nimi, Namn, Name, Osoite, Adress, Kaupunki, Stad, Operaattor, Kapasiteet, x, y, JourneysFrom, JourneysTo) 
 			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`
@@ -226,29 +233,29 @@ func (db *Db) AddNewStation(newStation Station) error {
 	return err
 }
 
-func (db *Db) GetLastJourneyId() (lastJourney JourneyFilter, err error) {
+func (db *Db) GetLastJourneyId() (lastJourneyId int, err error) {
 
 	row, err := db.connection.Query("SELECT MAX(id) FROM all_journeys;")
 	if err != nil {
-		return lastJourney, err
+		return lastJourneyId, err
 	}
 
 	for row.Next() {
-		err := row.Scan(&lastJourney.LastId)
+		err := row.Scan(&lastJourneyId)
 		if err != nil {
-			return lastJourney, err
+			return lastJourneyId, err
 		}
 	}
 
 	defer row.Close()
 
-	return lastJourney, err
+	return lastJourneyId, err
 }
 
 func (db *Db) GetJourneys(filter JourneyFilter) (journeys []Journey, err error) {
 	var journey Journey
 
-	query := fmt.Sprintf("SELECT * FROM 'all_journeys' WHERE id > %v ORDER BY id LIMIT %v", filter.LastId, filter.Limit)
+	query := fmt.Sprintf("SELECT * FROM 'all_journeys' WHERE id >= %v ORDER BY id LIMIT %v", filter.BatchFromId, filter.Limit)
 	rows, err := db.connection.Query(query)
 
 	if err != nil {

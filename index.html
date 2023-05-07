@@ -1,85 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="src/App.js" type="module"></script>
     <link rel="stylesheet" href="src/styles.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@300&display=swap" rel="stylesheet">
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css' rel='stylesheet' />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-</head>
-<body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="page-wrapper">
-        <div class="video-container">
-            <video autoplay loop muted>
-                <source src="src/video.mp4" type="video/mp4">
-            </video>
-            <div class="bike-box">
-                <h1>BIKE!</h1>
-            </div>
+      <div class="video-container">
+        <video autoplay loop muted>
+          <source src="src/video.mp4" type="video/mp4" />
+        </video>
+        <div class="bike-box">
+          <h1>BIKE!</h1>
         </div>
-        <div class="stations section">
-            <h1>STATIONS</h1>
-            <div class="stations-grid">
-                <div class="stations-list-wrapper">
-                    <div id="stations-list"></div>
-                </div>
-                <div id="station-details" class="stations-details">
-                    <div id="station-details-text"></div>
-                    <div id="station-details-map"></div>
-                </div>
-            </div>
-            <div id="add-stations">
-                <form id="station-form">
-                    <label for="ID">ID:</label>
-                    <input type="number" name="ID" id="ID"><br>
+      </div>
+      <div class="intro section">
+        With the arrival of the new season, it's a great time to start biking
+        with Helsinki City Bikes. Explore bike stations on this website and take
+        a look at selected journeys from summer 2021.
+      </div>
+      <div class="stations section">
+        <h1>STATIONS</h1>
+        <div class="section-text">Ride through 600+ bike stations and more</div>
+        <div class="stations-grid">
+          <div class="stations-list-wrapper">
+            <div id="stations-list"></div>
+          </div>
+          <div id="station-details" class="stations-details">
+            <div id="station-details-text"></div>
+            <div id="station-details-map"></div>
+          </div>
+        </div>
+        <h1>ADD A STATION</h1>
+        <div id="add-stations">
+          <form id="station-form">
+            <label for="Nimi">Finnish name:</label>
+            <input type="text" name="Nimi" id="Nimi" required /><br />
 
-                    <label for="Nimi">Finnish name:</label>
-                    <input type="text" name="Nimi" id="Nimi" required><br>
-                
-                    <label for="Namn">Swedish name:</label>
-                    <input type="text" name="Namn" id="Namn" required><br>
-                
-                    <label for="Name">English name:</label>
-                    <input type="text" name="Name" id="Name" required><br>
-                
-                    <label for="Osoite">Address in Finnish:</label>
-                    <input type="text" name="Osoite" id="Osoite" required><br>
-                
-                    <label for="Adress">Address in Swedish:</label>
-                    <input type="text" name="Adress" id="Adress" required><br>
-                
-                    <label for="Operaattor">Operator:</label>
-                    <input type="text" name="Operaattor" id="Operaattor"><br>
-                
-                    <label for="Kapasiteet">Capacity:</label>
-                    <input type="number" name="Kapasiteet" id="Kapasiteet" required><br>
-                
-                    <label for="JourneysFrom">Count of journeys that originated from this station:</label>
-                    <input type="number" name="JourneysFrom" id="JourneysFrom"><br>
-                
-                    <label for="JourneysTo">Count of journeys that ended at this station:</label>
-                    <input type="number" name="JourneysTo" id="JourneysTo"><br>
-                
-                    <button type="submit">Add station!</button>
-                </form>
-                <div id="add-station-response">&nbsp;</div>
+            <label for="Namn">Swedish name:</label>
+            <input type="text" name="Namn" id="Namn" required /><br />
+
+            <label for="Name">English name:</label>
+            <input type="text" name="Name" id="Name" required /><br />
+
+            <label for="Osoite">Address in Finnish:</label>
+            <input type="text" name="Osoite" id="Osoite" required /><br />
+
+            <label for="Adress">Address in Swedish:</label>
+            <input type="text" name="Adress" id="Adress" required /><br />
+
+            <label for="Operaattor">Operator:</label>
+            <input type="text" name="Operaattor" id="Operaattor" /><br />
+
+            <label for="Kapasiteet">Capacity:</label>
+            <input
+              type="number"
+              name="Kapasiteet"
+              id="Kapasiteet"
+              required
+            /><br />
+
+            <label for="JourneysFrom"
+              >Count of journeys that originated from this station:</label
+            >
+            <input type="number" name="JourneysFrom" id="JourneysFrom" /><br />
+
+            <label for="JourneysTo"
+              >Count of journeys that ended at this station:</label
+            >
+            <input type="number" name="JourneysTo" id="JourneysTo" /><br />
+            <div>
+              <button type="submit">Add station!</button>
             </div>
+          </form>
+          <div id="add-station-response"></div>
         </div>
-        <div class="journeys section">
-            <h1>JOURNEYS</h1>
-            <div class="journeys-wrapper">
-                <div id="journeys-list" class="journeys-table"></div>
-            </div>
+      </div>
+      <div class="journeys section">
+        <h1>JOURNEYS</h1>
+        <div class="section-text">Navigate through 1.000.000 journeys</div>
+        <div class="journeys-wrapper">
+          <div id="journeys-list" class="journeys-table"></div>
         </div>
+      </div>
     </div>
-</body>
-
+    <footer>
+      <ul class="social-links">
+        <li><a href="http://www.danilocangucu.info">danilocangucu.info</a></li>
+        <li>
+          <a href="https://github.com/danilocangucu"
+            ><i class="fa fa-github"></i
+          ></a>
+        </li>
+        <li>
+          <a
+            href="https://www.linkedin.com/in/danilo-cangu%C3%A7u-%F0%9F%8F%B3%EF%B8%8F%E2%80%8D%F0%9F%8C%88-a5731122/"
+            ><i class="fa fa-linkedin"></i
+          ></a>
+        </li>
+      </ul>
+    </footer>
+  </body>
 </html>
