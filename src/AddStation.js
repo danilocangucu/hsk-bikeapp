@@ -282,7 +282,7 @@ const validateCapacity = (capacity) => {
   if (isNaN(capacity) || capacity < 1 || capacity > 44) {
     return {
       isValid: false,
-      error: ["Capacity must be a number greater than or equal to 1."],
+      error: ["Capacity must be a number greater than or equal to 1 and less than 44."],
     };
   }
   return { isValid: true };
