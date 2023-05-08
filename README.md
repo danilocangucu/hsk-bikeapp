@@ -24,7 +24,7 @@ Now, let's take a closer look at the code!
    2) [Cypress E2E tests](#cypress-e2e-tests)
 9. [Running the application in Docker](#running-the-application-in-docker)
 10. [Cloud-based Backend](#cloud-based-backend)
-11. [Contributing](#contributing)
+11. [Reflections](#reflections)
 
 ## Introduction
 
@@ -49,7 +49,7 @@ If you are using Windows:
 Once you have these technologies installed, clone this repository to your IDE.
 
 Insert the following from the second page of my cover letter document:
-- Mapbox API Key to file src/Stations.js, line 111
+- Mapbox API Key to file src/Stations.js, line 110
 - Google Cloud API Key to file src/AddStation.js, line 151
 - Video.mp4 to src/
 
@@ -92,16 +92,16 @@ Serves the index.html file.
 Permanently redirects to /index and includes error handling for non-existent paths.
 
 ``/stations``  
-API handling with the option to include the query parameter "id".
+API handling with the option to include the query parameter "id".  
 
-   /stations?id=STATION_ID
+   ``/stations?id=STATION_ID``  
    The STATION_ID must be an integer between 1 and 405. If new stations are added, the allowed id will increase.
 
 ``/journeys``  
-API handling with the option to include the query parameter "batchfromid".
+API handling with the option to include the query parameter "batchfromid".  
 
-   /journeys?batchfromid=JOURNEY_ID
-   The JOURNEY_ID must be an integer between 1 and 1500580. A batch of maximum 3000 journeys starting from the JOURNEY_ID will be returned.
+   ``/journeys?batchfromid=JOURNEY_ID``  
+   The JOURNEY_ID must be an integer between 1 and 1500580. A batch of maximum 500 journeys starting from the JOURNEY_ID will be returned.
 
 ``/addstation``  
 Accepts POST requests to add new stations to the database.
@@ -111,7 +111,7 @@ To access the database handling code, navigate to the ``database`` directory and
 
 ## Stations
 
-This section includes the list of all stations, a view of each individual station, and a form to add a station.
+This section includes a counter of stations, a the list of all stations, a view of each individual station, and a form to add a station.
 
 ### Stations list
 
@@ -131,7 +131,7 @@ When you view a single station, the following information will be retrieved by s
 
 To learn more about the functions that handle the stations list, please refer to the ``getStationData``, ``showSingleStation``, and ``renderMap`` functions in ``src/Stations.js`` and ``handlers/addstation.go``.
 
-Please note that in order to display the maps properly, you will need to insert the Mapbox API key that has been provided in the application in the ``renderMap`` function in ``src/Stations.js``, line 111.
+Please note that in order to display the maps properly, you will need to insert the Mapbox API key that has been provided in the application in the ``renderMap`` function in ``src/Stations.js``, line 110.
 
 ### Add a station
 
@@ -156,7 +156,7 @@ To view how this section is implemented, please refer to the functions in ``src/
 
 ## Journeys
 
-Here, you can look at all journeys from the database. Since there's a lot of data, I chose to import batches of 3000 journeys and then a scrolling pagination of 50 journeys per scrolling. In the table of this section, the following information can be seen:
+Here, you can look at all journeys from the database. A counter of loaded journeys is also displayed. Since there's a lot of data, I chose to import batches of 500 journeys and then a scrolling pagination of 50 journeys per scrolling. In the table of this section, the following information can be seen:
 
 - Departure (date and time);
 - From (Finnish name of departure station);
@@ -236,6 +236,38 @@ When the application is running, you can access it by navigating to http://local
 ## Cloud-based Backend
 The backend of this application has been migrated to the cloud using Amazon Web Services (AWS). To enable this, I created a separate repository for the cloud implementation, which can be found [here](https://github.com/danilocangucu/hsk-bikeapp-solita-cloud).
 
-## Contributing
+## Reflections
 
-Loved this project and want to contibute? Please fork this repository and submit a pull request with your changes.
+I am very happy and proud of this project, having devoted substantial time and effort to it. My motivation arises not only from my aspiration to join the Dev Academy but also from my innate drive to excel in tasks - perhaps a characteristic of my Capricorn nature?
+
+During this journey, I acquired valuable knowledge on various services such as AWS, Mapbox, and Google Cloud API. Moreover, I sharpened my skills in E2E testing, Go, JavaScript, and HTML/CSS. From the beginning, I aimed to challenge myself and broaden my expertise in specific areas. For instance, I was intrigued by the video effect visible upon page load. I encountered it on a website during my daily "web design exploration" activity through websites ([Awwwards](https://www.awwwards.com/) is my favourite!) and thought it would be an interesting addition to this project. At one point, I became enamored with the idea of using the official HSL maps with Mapbox - yes, I explored HSLdevcom's GitHub, and obtained a Digitransit API key. I spent a couple of days attempting to make it work, but success eluded me (for now!).
+
+What began as a simple intention to complete one or two "extra section" tasks rapidly evolved into an insatiable thirst for exploring and experimenting with new features and technologies. And I accomplished them all! Given the wealth of learning opportunities presented by the assignment, I anticipate that the Academy will provide numerous challenges for me to explore and share with my peers - YAY!
+
+### Future Improvements
+While I take pride in this project, there are certain aspects that could use some improvement. Therefore, I plan to continue updating the project even after submitting it to Solita on Sunday, 07.05.2023. Here's a list of areas for improvement that I've noted down in my notebook:
+
+- Journeys Batch Error  
+    I discovered an issue while fetching batches of journeys. I'd like to better understand the problem and find a solution.
+
+- Prevent Scrolling While Loading a New Station  
+    This issue was quite frustrating! I've explored various options involving click events, focus, and CSS, but I'm not entirely satisfied with the current solution. It works for now, but I'd like to improve it.
+
+- Styling for Small Devices  
+    I haven't been able to thoroughly test the styling on smaller devices. I plan to test the application on my cellphone and iPad to identify what works well and what needs adjustment.
+
+- Error Handling in the createdb Script  
+    This is an urgent issue that needs to be addressed. I hope you don't encounter any errors while running the script!
+
+- Testing the Project on More Systems  
+    So far, I've tested the project on my MacBook and my boyfriend's Windows laptop. I'd like to test it on other systems to ensure everything works as expected.
+
+- Database Test with Raw Data  
+    I've been questioning the appropriateness of this test, as it only uses raw data from the stations dataset. I'd like to improve the test by incorporating filtered data (e.g., no journeys shorter than 10 meters and 10 seconds, no duplicated data).
+
+- Loading Transition for the Index Page  
+    Since it takes a few milliseconds to load all the content on the page, adding a smooth and elegant loading transition could enhance the user experience.
+
+I hope you found this README helpful and informative! If you have any questions or suggestions, feel free to reach out to me. I appreciate your time and consideration, and am looking forward to seeing you at Solita soon! 😊
+
+Happy coding! 🚀
