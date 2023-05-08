@@ -20,25 +20,12 @@ describe("Stations details display test", () => {
               cy.request(`http://localhost:8080/stations?id=${stationId}`)
                 .its("body")
                 .then((stationData) => {
-                  expect(detailsText).to.contain(
-                    stationData.Nimi
-                  );
-                  expect(detailsText).to.contain(
-                    stationData.Namn
-                  );
-                  expect(detailsText).to.contain(
-                    stationData.Osoite
-                  );
-                  expect(detailsText).to.contain(
-                    stationData.Adress
-                  );
-                  expect(detailsText).to.contain(
-                    stationData.JourneysFrom
-                  );
-                  expect(detailsText).to.contain(
-                    stationData.JourneysTo
-                  );
-
+                  expect(detailsText).to.contain(stationData.Nimi);
+                  expect(detailsText).to.contain(stationData.Namn);
+                  expect(detailsText).to.contain(stationData.Osoite);
+                  expect(detailsText).to.contain(stationData.Adress);
+                  expect(detailsText).to.contain(stationData.JourneysFrom);
+                  expect(detailsText).to.contain(stationData.JourneysTo);
                 });
             });
         });
@@ -67,5 +54,3 @@ describe("Stations list names test", () => {
     });
   });
 });
-
-

@@ -1,20 +1,20 @@
-let stationsList = document.getElementById('stations-list')
-let stationDetails = document.getElementById('station-details-text')
-let stationsText = document.getElementById('stations-text')
+let stationsList = document.getElementById("stations-list");
+let stationDetails = document.getElementById("station-details-text");
+let stationsText = document.getElementById("stations-text");
 
 // Stations list
 
 export const getStations = () => {
-    fetch("/stations")
+  fetch("/stations")
     .then((response) => response.json())
     .then((stations) => {
-        showAllStations(stations)
-    })
-}
+      showAllStations(stations);
+    });
+};
 
 const showAllStations = (stations) => {
-  stationsText.innerText = `Ride through ${stations.length} bike stations`
-  stationsList.innerHTML = ""
+  stationsText.innerText = `Ride through ${stations.length} bike stations`;
+  stationsList.innerHTML = "";
   const itemsPerPage = 20;
   let currentPage = 1;
 
@@ -23,15 +23,17 @@ const showAllStations = (stations) => {
     const endIndex = startIndex + itemsPerPage;
     const stationsToRender = stations.slice(startIndex, endIndex);
 
-    const stationElements = stationsToRender.map(station => {
+    const stationElements = stationsToRender.map((station) => {
       const stationDiv = document.createElement("div");
       stationDiv.innerHTML = `${station.Nimi}<br>${station.Namn}`;
       stationDiv.id = station.ID;
       stationDiv.className = "station-names";
       stationDiv.addEventListener("click", () => {
-        disableScroll()
-        showSingleStation({detail: {id: station.ID}});
-        setTimeout(() => { enableScroll() }, 200);
+        disableScroll();
+        showSingleStation({ detail: { id: station.ID } });
+        setTimeout(() => {
+          enableScroll();
+        }, 200);
       });
       return stationDiv;
     });
@@ -39,9 +41,11 @@ const showAllStations = (stations) => {
     stationsList.append(...stationElements);
 
     if (currentPage === 1 && startIndex === 0) {
-      disableScroll()
-      showSingleStation({detail: {id: stations[0].ID}});
-      setTimeout(() => {enableScroll()}, 200);
+      disableScroll();
+      showSingleStation({ detail: { id: stations[0].ID } });
+      setTimeout(() => {
+        enableScroll();
+      }, 200);
     }
   };
 
@@ -74,9 +78,7 @@ const getStationData = async (id) => {
 };
 
 const showSingleStation = async (event) => {
-
   try {
-
     const stationData = await getStationData(event.detail.id);
     stationDetails.innerHTML = "";
 
@@ -96,8 +98,6 @@ const showSingleStation = async (event) => {
         element.classList.remove("selected");
       }
     });
-
-
   } catch (error) {
     console.error("Error showing single station:", error);
   }
@@ -107,8 +107,7 @@ const renderMap = async (stationData) => {
   try {
     const { Latitude: latitude, Longitude: longitude } = stationData;
 
-    mapboxgl.accessToken =
-      "INSERT_MAPBOX_API_KEY";
+    mapboxgl.accessToken = "INSERT_MAPBOX_API_KEY";
     const mapElement = document.getElementById("station-details-map");
     const map = new mapboxgl.Map({
       container: mapElement,
@@ -117,15 +116,15 @@ const renderMap = async (stationData) => {
       zoom: 16,
     });
 
-    map.on('styleimagemissing', function(e) {
-        if (e.id === 'parking-paid') {
-          map.addImage('parking-paid', {
-            "width": 32,
-            "height": 32,
-            "data": new Uint8Array(4 * 32 * 32).fill(255, 0, 4 * 32 * 32) // Set all pixels to white
-          });
-        }
-      });
+    map.on("styleimagemissing", function (e) {
+      if (e.id === "parking-paid") {
+        map.addImage("parking-paid", {
+          width: 32,
+          height: 32,
+          data: new Uint8Array(4 * 32 * 32).fill(255, 0, 4 * 32 * 32), // Set all pixels to white
+        });
+      }
+    });
 
     const marker = new mapboxgl.Marker()
       .setLngLat([latitude, longitude])
@@ -146,9 +145,9 @@ const renderMap = async (stationData) => {
 const handleWheelEvent = (event) => {
   event.preventDefault();
   stationsList.scrollLeft += event.deltaY + event.deltaX;
-}
+};
 
-const mediaQuery = window.matchMedia("(max-width: 590px)");
+const mediaQuery = window.matchMedia("(max-width: 900px)");
 
 if (mediaQuery.matches) {
   stationsList.addEventListener("wheel", handleWheelEvent);
@@ -164,10 +163,11 @@ mediaQuery.addEventListener("change", (event) => {
   }
 });
 
-// dont scroll
+// Don't scroll when loading a station
 function disableScroll() {
   if (document.documentElement.scrollHeight > window.innerHeight) {
-    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
     document.documentElement.style.top = `-${scrollTop}px`;
     document.documentElement.classList.add("noscroll");
   }

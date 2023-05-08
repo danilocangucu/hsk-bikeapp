@@ -1,252 +1,465 @@
 /* General styles */
 * {
-    margin: 0;
-    padding: 0;
-    scrollbar-width: auto;
-    scrollbar-color: #333333 #FBBE1A;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: auto;
+  scrollbar-color: #333333 #fbbe1a;
 }
 
 *::-webkit-scrollbar {
-    width: 10px;
-    border-radius: 5px;
+  width: 10px;
+  border-radius: 5px;
 }
 
 *::-webkit-scrollbar-track {
-    border-radius: 5px;
+  border-radius: 5px;
 }
 
 *::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background-color: #0072C6;
+  border-radius: 5px;
+  background-color: #0072c6;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    border-radius: 5px;
-    background-color: black;
+  border-radius: 5px;
+  background-color: black;
 }
 
 h1,
 h4 {
-    font-family: 'Anton', sans-serif;
+  font-family: "Anton", sans-serif;
 }
 
 h4 {
-    font-size: 1.3em;
-    font-weight: 100;
+  font-size: 1.3em;
+  font-weight: 100;
 }
 
 h1 {
-    font-size: 6em;
-  }  
+  font-size: 6em;
+}
 
 h2 {
-    font-size: 30px;
+  font-size: 30px;
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .noscroll {
-    position: fixed;
-    overflow-y: scroll;
-    width: 100%;
-}  
+  position: fixed;
+  overflow-y: scroll;
+  width: 100%;
+}
 
 /* BIKE! section */
 
 .video-container {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .video-container video {
-    margin-left: 10%;
-    margin-top: -2vw;
-    width: 80%;
-    height: 100%;
+  margin-left: 10%;
+  margin-top: -2vw;
+  width: 80%;
+  height: 100%;
 }
 
 .bike-box {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    background: black;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    mix-blend-mode: multiply;
-    user-select: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  mix-blend-mode: multiply;
+  user-select: none;
 }
 
 .bike-box h1 {
-    height: 100%;
-    width: 100%;
-    max-height: 100%;
-    max-width: 100%;
-    overflow: hidden;
-    text-align: center;
-    line-height: 100%;
-    font-size: min(43vw);
+  height: 100%;
+  width: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  text-align: center;
+  line-height: 100%;
+  font-size: min(43vw);
 }
 
 /* INTRO */
 .intro {
-    font-family: 'Anton';
-    font-size: xxx-large;
-    text-align: justify;
-    padding-top: 2%;
-    padding-bottom: 2% !important;
+  font-family: "Anton";
+  font-size: xxx-large;
+  text-align: justify;
+  padding-top: 2%;
+  padding-bottom: 2% !important;
 }
 
 /* Common code for sections */
 
 .section {
-    padding-left: 10%;
-    padding-right: 10%;
-    padding-bottom: 5%;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-bottom: 5%;
 }
 
 .section-text {
-    color: #0072C6;
-    font-family: 'Anton';
-    font-size: xx-large;
-    margin-bottom: 2%;
+  color: #0072c6;
+  font-family: "Anton";
+  font-size: xx-large;
+  margin-bottom: 2%;
 }
 
 /* Stations section */
 .stations {
-    background-color: #BFDBF7;
+  background-color: #bfdbf7;
 }
 
 #station-details-text {
-    font-size: 1.2em;
-    font-size: 20px;
-    color: #000000;
-    line-height: 30px;
+  font-size: 1.2em;
+  font-size: 20px;
+  color: #000000;
+  line-height: 30px;
 }
 
 .station-names {
-    background-color: #FFFFFF;
-    color: #000000;
+  background-color: #ffffff;
+  color: #000000;
 }
 
 .selected {
-    background-color: #0072C6;
-    color: #FFFFFF;
+  background-color: #0072c6;
+  color: #ffffff;
 }
 
 /* Single station view */
 .stations-details {
-    background-color: #FFFFFF;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
 }
 
 /* Add station form */
 #add-stations {
-    font-size: 1.2em;
-    background-color: #FFFFFF;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
-    max-width: 600px;
+  font-size: 1.2em;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
+  max-width: 600px;
 }
 
 #add-stations label,
 #add-stations input {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 #station-form > div {
-    text-align: center;
+  text-align: center;
 }
 
 #add-stations button {
-    background-color: #0072C6;
-    color: #FFFFFF;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
+  background-color: #0072c6;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 #add-stations button:hover {
-    background-color: #005a99;
+  background-color: #005a99;
 }
 
 #add-station-response {
-    text-align: center;
+  text-align: center;
 }
 
 #add-station-response:not(:empty) > div {
-    margin: 0 auto;
-    display: inline-block;
-    text-align: center;
-    margin-top: 10px;
-    background-color: #BFDBF7;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: medium;
-    font-weight: bold;
+  margin: 0 auto;
+  display: inline-block;
+  text-align: center;
+  margin-top: 10px;
+  background-color: #bfdbf7;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: medium;
+  font-weight: bold;
 }
 
 .stations-grid {
-    display: grid;
-    grid-template-columns: 0.5fr 1fr;
-    gap: 20px;
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  gap: 20px;
 }
 
 .stations-details {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    gap: 20px;
-    max-width: 500px;
-    max-height: 500px;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  max-width: 500px;
+  max-height: 500px;
 }
 
 .stations-list-wrapper {
-    max-height: 500px;
-    position: relative;
-    max-width: 300px;
+  max-height: 500px;
+  position: relative;
+  max-width: 300px;
 }
 
 .stations-list-wrapper::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background: linear-gradient(to bottom, transparent, #BFDBF7);
-    pointer-events: none;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, #bfdbf7);
+  pointer-events: none;
 }
 
 #stations-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    max-height: 500px;
-    overflow-y: scroll;
-    position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-height: 500px;
+  overflow-y: scroll;
+  position: relative;
 }
 
 #stations-list > div {
-    display: inline-block;
-    margin-bottom: 3px;
+  display: inline-block;
+  margin-bottom: 3px;
 }
 
 .station-names {
-    display: inline-block;
-    padding: 10px;
+  display: inline-block;
+  padding: 10px;
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px !important;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.station-names:not(.selected):hover {
+  background-color: #e1e5f2;
+}
+
+#station-details-map {
+  max-height: 100%;
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* Journeys section */
+
+.journeys {
+  background-color: white;
+}
+
+.journeys-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-height: 400px;
+  max-width: 900px;
+  overflow-y: scroll;
+  font-size: 1.2em;
+  padding-right: 10px;
+  border-spacing: 0;
+  position: relative;
+}
+
+.journeys-wrapper {
+  padding-right: 10px;
+  position: relative;
+}
+
+.journeys-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 90%;
+  left: 0;
+  width: 100%;
+  height: 10%;
+  background: linear-gradient(to bottom, transparent, white);
+  z-index: 1;
+}
+
+.journeys-table thead {
+  position: sticky;
+  top: 0;
+  background-color: black;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+.journeys-table th,
+.journeys-table td {
+  padding: 1vw;
+  text-align: center;
+}
+
+.journeys-table th:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.journeys-table th:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.journeys-table td {
+  padding: 2%;
+}
+
+.journeys-table td:last-of-type {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.journeys-table td:first-of-type {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.journeys-table tr:not(:first-child):nth-child(odd) {
+  background-color: #177ac9;
+  color: white;
+}
+
+.journeys-table td:nth-child(2),
+.journeys-table td:nth-child(3) {
+  width: 50%;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 3px;
+  background-color: black;
+  color: white;
+}
+
+footer a {
+  color: white;
+  font-size: 20px;
+}
+
+address {
+  margin-bottom: 10px;
+}
+
+address a {
+  color: #bfdbf7;
+}
+
+.social-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.social-links li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.social-links li a {
+  color: white;
+  text-decoration: none;
+}
+
+@media screen and (max-width: 900px) {
+  /* General styles */
+
+  h4 {
+    font-size: 1.3em;
+    font-weight: 100;
+  }
+
+  h1 {
+    font-size: 4em;
+  }
+
+  h2 {
+    font-size: 30px;
+  }
+
+  /* Intro */
+
+  .intro {
+    font-size: xx-large;
+  }
+
+  .section-text {
+    color: #0072c6;
+    font-family: "Anton";
+    font-size: x-large;
+    margin-bottom: 2%;
+  }
+
+  /* Stations section */
+  .stations-list-wrapper {
+    position: relative;
+    max-width: 540px;
+    min-width: 200px;
+  }
+
+  .stations-grid {
+    display: grid;
+    grid-template-rows: 95px 1fr;
+    grid-template-columns: none;
+    gap: 5px !important;
+    max-width: 900px;
+    min-width: 100px;
+  }
+
+  .stations-list-wrapper::after {
+    /* border: 1px solid white; */
+    height: 100% !important;
+    width: 5%;
+    margin-left: 95%;
+    background: linear-gradient(to right, transparent, #bfdbf7) !important;
+  }
+
+  #stations-list {
+    display: flex;
+    flex-direction: column;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    max-height: 95px;
+    max-width: 100%;
+  }
+
+  #stations-list {
+    display: flex;
+    flex-direction: column;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    max-width: 100%;
+  }
+
+  .station-names {
     max-width: 200px;
-    max-height: 200px;
+    max-height: 100px;
     border-radius: 5px;
     text-align: center;
     text-decoration: none;
@@ -254,266 +467,53 @@ body {
     font-weight: bold;
     text-transform: uppercase;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
-    cursor: pointer
-}
-
-.station-names:not(.selected):hover {
-    background-color: #E1E5F2;
-}  
-
-#station-details-map {
-    max-height: 100%;
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
-}
-
-/* Journeys section */
-
-.journeys {
-    background-color: white;
-}
-
-.journeys-table {
-    border-collapse: collapse;
-    width: 100%;
-    max-height: 400px;
-    max-width: 900px;
-    overflow-y: scroll;
-    font-size: 1.2em;
-    padding-right: 10px;
-    border-spacing: 0;
-    position: relative;
-}
-
-.journeys-wrapper {
-    padding-right: 10px;
-    position: relative;
-}
-
-.journeys-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 90%;
-    left: 0;
-    width: 100%;
-    height: 10%;
-    background: linear-gradient(to bottom, transparent, white);
-    z-index: 1;
-}
-
-.journeys-table thead {
-    position: sticky;
-    top: 0;
-    background-color: black;
-    color: white;
-    text-transform: uppercase;
-    font-weight: 300;
-}
-
-.journeys-table th,
-.journeys-table td {
-    padding: 1vw;
-    text-align: center;
-}
-
-.journeys-table th:first-child {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-
-.journeys-table th:last-child {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-.journeys-table td {
-    padding: 2%;
-}
-
-.journeys-table td:last-of-type {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-.journeys-table td:first-of-type {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-
-.journeys-table tr:not(:first-child):nth-child(odd) {
-    background-color: #177AC9;
-    color: white;
-}
-
-.journeys-table td:nth-child(2),
-.journeys-table td:nth-child(3) {
-    width: 50%;
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 3px;
-    background-color: black;
-    color: white;
+    cursor: pointer;
   }
 
-  footer a {
-    color: white;
-    font-size: 20px;
- }
-  
-  address {
-    margin-bottom: 10px;
-  }
-  
-  address a{
-    color:#BFDBF7
+  /* Journeys section */
+
+  #journeys-list {
+    overflow-x: hidden;
   }
 
-  .social-links {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .social-links li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-  
-  .social-links li a {
-    color: white;
-    text-decoration: none;
+  .journeys-table th,
+  .journeys-table td {
+    font-size: 0.65em !important;
   }
 
-@media screen and (max-width: 900px) {
-    /* General styles */
-
-    h4 {
-        font-size: 1.3em;
-        font-weight: 100;
-    }
-    
-    h1 {
-        font-size: 4em;
-      }  
-    
-    h2 {
-        font-size: 30px;
-    }
-
-    /* Intro */
-
-    .intro {
-        font-size: xx-large;
-    }
-
-    .section-text {
-        color: #0072C6;
-        font-family: 'Anton';
-        font-size: x-large;
-        margin-bottom: 2%;
-    }
-
-    /* Stations section */
-    .stations-list-wrapper {
-        position: relative;
-        max-width: 540px;
-        min-width: 200px;
-    }
-
-    .stations-grid {
-        display: grid;
-        grid-template-rows: 95px 1fr;
-        grid-template-columns: none;
-        gap: 5px !important;
-        max-width: 900px;
-        min-width: 100px;
-    }
-
-    .stations-list-wrapper::after {
-        /* border: 1px solid white; */
-        height: 100% !important;
-        width: 5%;
-        margin-left: 95%;
-        background: linear-gradient(to right, transparent, #BFDBF7) !important;
-    }
-
-    #stations-list {
-        display: flex;
-        flex-direction: column;
-        overflow-x: scroll;
-        overflow-y: hidden;
-        max-height: 95px;
-        max-width: 100%;
-    }
-
-    #stations-list {
-        display: flex;
-        flex-direction: column;
-        overflow-x: scroll;
-        overflow-y: hidden;
-        max-width: 100%;
-    }
-
-    .station-names {
-        max-width: 200px;
-        max-height: 100px;
-        border-radius: 5px;
-        text-align: center;
-        text-decoration: none;
-        font-size: 14px !important;
-        font-weight: bold;
-        text-transform: uppercase;
-        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
-        cursor: pointer
-    }
-
-    /* Journeys section */
-
-    #journeys-list {
-        overflow-x: hidden;
-    }
-
-    .journeys-table th, .journeys-table td {
-        font-size: 0.65em !important;
-    }
-
-    .section {
-        padding-left: 5%;
-        padding-right: 5%;
-        padding-bottom: 3%;
-    }
+  .section {
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 3%;
+  }
 }
 
 @media screen and (max-width: 350px) {
+  /* Journeys section */
+  .journeys-table th,
+  .journeys-table td {
+    font-size: 1.18vh !important;
+  }
 
-    /* Journeys section */
-    .journeys-table th, .journeys-table td {
-        font-size: 1.18vh !important;
-    }
+  .journeys-table td {
+    padding: 0.5% !important;
+  }
 
-    .journeys-table td {
-        padding: 0.5% !important;
-    }
+  .journeys-table td:first-of-type {
+    display: none;
+  }
 
-    .journeys-table td:first-of-type {
-        display: none;
-    }
+  .journeys-table td:nth-of-type(2) {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
 
-    .journeys-table td:nth-of-type(2) {
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-    }
+  .journeys-table th:first-child {
+    display: none;
+  }
 
-    .journeys-table th:first-child {
-        display: none;
-    }
-
-    .journeys-table th:nth-child(2) {
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-    }
-
+  .journeys-table th:nth-child(2) {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
 }

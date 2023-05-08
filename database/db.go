@@ -228,7 +228,7 @@ func (db *Db) AddNewStation(newStation Station) error {
 	query := `INSERT INTO stations (FID, ID, Nimi, Namn, Name, Osoite, Adress, Kaupunki, Stad, Operaattor, Kapasiteet, x, y, JourneysFrom, JourneysTo) 
 			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`
 
-	_, err = db.connection.Exec(query, newStation.FID, newStation.ID, newStation.Nimi, newStation.Namn, newStation.Name, newStation.Osoite, newStation.Adress, newStation.Kaupunki, newStation.Stad, newStation.Operaattor, newStation.Kapasiteet, newStation.Latitude, newStation.Longitude, newStation.JourneysFrom, newStation.JourneysTo)
+	_, err = db.connection.Exec(query, newStation.FID, newStation.ID, newStation.Nimi, newStation.Namn, newStation.Name, newStation.Osoite, newStation.Adress, newStation.Kaupunki, newStation.Stad, newStation.Operaattor, newStation.Kapasiteet, newStation.Longitude, newStation.Latitude, newStation.JourneysFrom, newStation.JourneysTo)
 
 	return err
 }

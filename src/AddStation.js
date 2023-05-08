@@ -1,6 +1,6 @@
-import { getStations } from './Stations.js'
+import { getStations } from "./Stations.js";
 
-let addStationResponse = document.getElementById('add-station-response')
+let addStationResponse = document.getElementById("add-station-response");
 
 export const addStation = () => {
   const form = document.getElementById("station-form");
@@ -24,9 +24,9 @@ export const addStation = () => {
 
     const result = await validateNewStation(newStation);
 
-    addStationResponse.innerHTML = ""
-    let responseDiv = document.createElement("div")
-    addStationResponse.appendChild(responseDiv)
+    addStationResponse.innerHTML = "";
+    let responseDiv = document.createElement("div");
+    addStationResponse.appendChild(responseDiv);
 
     if (result.isValid) {
       fetch("/addstation", {
@@ -72,17 +72,15 @@ export const addStation = () => {
         });
     } else {
       // validation failed
-      result.errors.forEach(
-        errorArray => {
-          if (errorArray.length > 1) {
-            errorArray.forEach(
-              error => responseDiv.innerHTML += `${error}<br>`
-            );
-          } else {
-            responseDiv.innerHTML += `${errorArray}<br>`;
-          }
+      result.errors.forEach((errorArray) => {
+        if (errorArray.length > 1) {
+          errorArray.forEach(
+            (error) => (responseDiv.innerHTML += `${error}<br>`)
+          );
+        } else {
+          responseDiv.innerHTML += `${errorArray}<br>`;
         }
-      );
+      });
     }
   });
 };
@@ -99,7 +97,9 @@ const validateNewStation = async (newStation) => {
   );
   const operatorValidationResult = validateOperator(newStation.Operaattor);
   const capacityValidationResult = validateCapacity(newStation.Kapasiteet);
-  const validateJourneysFromCount = validateJourneysCount(newStation.JourneysFrom);
+  const validateJourneysFromCount = validateJourneysCount(
+    newStation.JourneysFrom
+  );
   const validateJourneysToCount = validateJourneysCount(newStation.JourneysTo);
 
   if (
@@ -137,7 +137,7 @@ const validateNewStation = async (newStation) => {
 
     return { isValid: false, errors };
   }
-}
+};
 
 const validateAddresses = async (adress, osoite) => {
   if (adress === osoite) {
@@ -152,50 +152,53 @@ const validateAddresses = async (adress, osoite) => {
   const apiUrl = "https://maps.googleapis.com/maps/api/geocode/json";
 
   const addressesPromises = addresses.map((address) => {
-    const url = `${apiUrl}?address=${encodeURIComponent(
-      address+", Helsinki, Finland"
-    )}&key=${apiKey}&components=administrative_area:"Helsinki"&language=sv`;
+    const url = `${apiUrl}?address=${
+      address + `%20Helsinki,%20Finland`
+    }&key=${apiKey}&language=sv`;
     return fetch(url)
       .then((response) => response.json())
       .then((data) => {
         let latitude = undefined;
         let longitude = undefined;
-        console.log(data.results)
-        if (!(data.results[0].formatted_address == "Helsingfors, Finland")) {
-          const addressComponents = data.results[0].address_components;
-          const city = addressComponents.find((component) =>
-            component.types.includes("locality")
-          );
-          if (
-            city &&
-            (city.long_name === "Helsingfors" || city.long_name === "Esbo")
-          ) {
-            latitude = data.results[0].geometry.location.lat;
-            longitude = data.results[0].geometry.location.lng;
-            return {
-              isValid: true,
-              Kaupunki: city.long_name === "Helsingfors" ? "Helsinki" : "Espo",
-              Stad: city.long_name,
-              Latitude: latitude,
-              Longitude: longitude,
-            };
-          } else {
-            return {
-              isValid: false,
-              error: [`The address ${address} is not in Helsinki or Espoo.`],
-            };
+        if (data && data.results) {
+          if (!(data.results[0].formatted_address == "Helsingfors, Finland")) {
+            const addressComponents = data.results[0].address_components;
+            const city = addressComponents.find((component) =>
+              component.types.includes("locality")
+            );
+            if (
+              city &&
+              (city.long_name === "Helsingfors" || city.long_name === "Esbo")
+            ) {
+              latitude = data.results[0].geometry.location.lat;
+              longitude = data.results[0].geometry.location.lng;
+              return {
+                isValid: true,
+                Kaupunki:
+                  city.long_name === "Helsingfors" ? "Helsinki" : "Espo",
+                Stad: city.long_name,
+                Latitude: latitude,
+                Longitude: longitude,
+              };
+            } else {
+              return {
+                isValid: false,
+                error: [`The address ${address} is not in Helsinki or Espoo.`],
+              };
+            }
           }
-        } else {
-          return {
-            isValid: false,
-            error: [`The address ${address} is not valid.`],
-          };
         }
+        return {
+          isValid: false,
+          error: [`The address ${address} is not valid.`],
+        };
       })
       .catch((error) => {
         return {
           isValid: false,
-          error: [`An error occurred while validating the address ${address}: ${error}`],
+          error: [
+            `An error occurred while validating the address ${address}: ${error}`,
+          ],
         };
       });
   });
@@ -261,11 +264,10 @@ const validateNames = (nimi, namn, name) => {
 };
 
 const validateOperator = (operator) => {
-
-  if (operator === ""){
-    return { isValid: true }
+  if (operator === "") {
+    return { isValid: true };
   }
-  
+
   const regex = /^[a-zA-Z\s]+$/;
   const isValid = regex.test(operator);
 
@@ -290,7 +292,9 @@ const validateJourneysCount = (journeysCount) => {
   if (isNaN(journeysCount) || journeysCount < 0) {
     return {
       isValid: false,
-      error: ["The counts of journeys must be a number greater than or equal to 0."],
+      error: [
+        "The counts of journeys must be a number greater than or equal to 0.",
+      ],
     };
   }
   return { isValid: true };

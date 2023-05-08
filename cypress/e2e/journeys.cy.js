@@ -15,7 +15,7 @@ describe("Journeys details should match the API data", () => {
       const departureTimestamp = $tds.eq(0).text();
       const departureStationName = $tds.eq(1).text();
       const returnStationName = $tds.eq(2).text();
-      const distanceInKm = $tds.eq(3).text().replace(/\.0+/, '');
+      const distanceInKm = $tds.eq(3).text().replace(/\.0+/, "");
 
       // Convert the date in the table to the same format as the API response
       const dateParts = departureTimestamp.split(/\s+/)[0].split(".");
@@ -24,11 +24,15 @@ describe("Journeys details should match the API data", () => {
 
       // Use the station names and timestamps to verify the row details against the API data
       expect(isoDateString).to.equal(this.journeysData[index - 1].Departure);
-      expect(departureStationName).to.equal(this.journeysData[index - 1].DepartureStationName);
-      expect(returnStationName).to.equal(this.journeysData[index - 1].ReturnStationName);
-      const apiDistanceInKm = Math.round(this.journeysData[index - 1].CoveredDistanceM / 100) / 10;
+      expect(departureStationName).to.equal(
+        this.journeysData[index - 1].DepartureStationName
+      );
+      expect(returnStationName).to.equal(
+        this.journeysData[index - 1].ReturnStationName
+      );
+      const apiDistanceInKm =
+        Math.round(this.journeysData[index - 1].CoveredDistanceM / 100) / 10;
       expect(distanceInKm).to.equal(apiDistanceInKm + "km");
-
     });
   });
 });
