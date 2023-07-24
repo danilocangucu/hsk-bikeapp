@@ -1,33 +1,12 @@
 # #!/bin/bash
-
+export NODE_TLS_REJECT_UNAUTHORIZED=0
 # Define the file paths and names
 DATASET_1="2021-05.csv"
 DATASET_2="2021-06.csv"
 DATASET_3="2021-07.csv"
-DATASET_4="726277c507ef4914b0aec3cbcfcbfafc_0.csv"
+DATASET_4="Helsingin_ja_Espoon_kaupunkipy%C3%B6r%C3%A4asemat_avoin.csv"
 DB_NAME="database/hsk-city-bike-app.db"
 ALL_JOURNEYS="all_journeys"
-
-if [ -f "$DB_NAME" ]; then
-  rm -vf "$DB_NAME"
-fi
-
-mkdir -p datasets
-
-for JOURNEYS_DATASETS in $DATASET_1 $DATASET_2 $DATASET_3; do
-# Delete CSV files of journeys if they exist & download their newest version
-if [ -f "./datasets/$JOURNEYS_DATASETS" ]; then
-  rm -vf "./datasets/$JOURNEYS_DATASETS"
-fi
-echo "Downloading $JOURNEYS_DATASETS ..."
-wget https://dev.hsl.fi/citybikes/od-trips-2021/$JOURNEYS_DATASETS -P "./datasets/"
-done
-# Delete CSV file of stations it it exist & download its newest version
-if [ -f "./datasets/$DATASET_4" ]; then
-  rm -vf "./datasets/$DATASET_4"
-fi
-echo "Downloading $DATASET_4 ..."
-wget -q https://opendata.arcgis.com/datasets/$DATASET_4 -P "./datasets"
 
 # Loop over each dataset of journeys
 for DATASET in $DATASET_1 $DATASET_2 $DATASET_3; do
