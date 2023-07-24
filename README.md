@@ -10,21 +10,24 @@ Now, let's take a closer look at the code!
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
-2. [Getting Started](#getting-started)
-3. [Data Import](#data-import)
-4. [Running the App](#running-the-app)
-5. [Stations](#stations)
-   1) [Stations list](#stations-list)
-   2) [Single station view](#single-station-view)
-   3) [Add a station](#add-a-station)
-6. [Journeys](#journeys)
-7. [Testing](#testing)
-   1) [Golang unit tests](#golang-unit-tests)
-   2) [Cypress E2E tests](#cypress-e2e-tests)
-9. [Running the application in Docker](#running-the-application-in-docker)
-10. [Cloud-based Backend](#cloud-based-backend)
-11. [Reflections](#reflections)
+- [My Helsinki City Bike Single Page App](#my-helsinki-city-bike-single-page-app)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Getting Started](#getting-started)
+  - [Data Import](#data-import)
+  - [Running the App](#running-the-app)
+  - [Stations](#stations)
+    - [Stations list](#stations-list)
+    - [Single station view](#single-station-view)
+    - [Add a station](#add-a-station)
+  - [Journeys](#journeys)
+  - [Testing](#testing)
+    - [Golang unit tests](#golang-unit-tests)
+    - [Cypress E2E tests](#cypress-e2e-tests)
+  - [Running the application in Docker](#running-the-application-in-docker)
+  - [Cloud-based Backend](#cloud-based-backend)
+  - [Reflections](#reflections)
+    - [Future Improvements](#future-improvements)
 
 ## Introduction
 
@@ -55,6 +58,13 @@ Insert the following to have the app running correctly:
 If you encounter any issues, please do not hesitate to contact me via phone or email, both of which can be found within the application.
 
 ## Data Import
+Download the following files and place them at the datasets folder:
+
+1. [2021-05.csv](https://dev.hsl.fi/citybikes/od-trips-2021/2021-05.csv)
+2. [2021-06.csv](https://dev.hsl.fi/citybikes/od-trips-2021/2021-06.csv)
+3. [2021-07.csv](https://dev.hsl.fi/citybikes/od-trips-2021/2021-07.csv)
+4. [Helsingin_ja_Espoon_kaupunkipy%C3%B6r%C3%A4asemat_avoin.csv](https://opendata.arcgis.com/datasets/726277c507ef4914b0aec3cbcfcbfafc_0.csv)
+
 
 To import the data, run the following script from the root directory with the command below.
 
