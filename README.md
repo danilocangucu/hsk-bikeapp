@@ -1,4 +1,4 @@
-# My Helsinki City Bike Single Page App
+# My Helsinki City Bikes (Single Page App)
 
 Greetings and welcome!
 
