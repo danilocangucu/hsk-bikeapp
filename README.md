@@ -2,7 +2,7 @@
 
 Greetings and welcome!
 
-Before diving into the code, I would like to express my gratitude to my colleague Iuliia Chipsanova for sharing her coding knowledge with me throughout the past year at Grit:Lab. I would also like to thank my boyfriend Jan Korte for his patience and valuable inputs on this project, despite hearing about "the bikes" every day.
+Before diving into the code, I would like to express my gratitude to my friend Iuliia Chipsanova for sharing her coding knowledge with me throughout 2022. I would also like to thank my boyfriend Jan Korte for his patience and valuable inputs on this project, despite hearing about "the bikes" every day.
 
 Creating this app was a challenging month-long journey. Throughout the process, I worked on it almost every day, updating both this GitHub repository and my [Trello dashboard](https://trello.com/b/ZfZX3lh6/tasks).
 
